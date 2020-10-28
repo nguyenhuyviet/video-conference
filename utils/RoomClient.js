@@ -253,11 +253,11 @@ export default class RoomClient {
 
     // eslint-disable-next-line no-unused-vars
     this._protoo.on('request', async (request, accept, reject) => {
-      // console.debug(
-      //   'proto "request" event [method:%s, data:%o]',
-      //   request.method,
-      //   request.data
-      // )
+      console.debug(
+        'proto "request" event [method:%s, data:%o]',
+        request.method,
+        request.data
+      )
 
       switch (request.method) {
         case 'newConsumer': {
@@ -333,7 +333,7 @@ export default class RoomClient {
             if (consumer.kind === 'video' && this.store.state.me.audioOnly)
               this._pauseConsumer(consumer)
           } catch (error) {
-            // console.error('"newConsumer" request failed:%o', error)
+            console.error('"newConsumer" request failed:%o', error)
 
             this.store.dispatch('notify', {
               type: 'error',
@@ -387,11 +387,11 @@ export default class RoomClient {
             })
 
             dataConsumer.on('open', () => {
-              // console.debug('DataConsumer "open" event')
+              console.debug('DataConsumer "open" event')
             })
 
             dataConsumer.on('close', () => {
-              // console.warn('DataConsumer "close" event')
+              console.warn('DataConsumer "close" event')
 
               this._dataConsumers.delete(dataConsumer.id)
 
@@ -402,7 +402,7 @@ export default class RoomClient {
             })
 
             dataConsumer.on('error', (error) => {
-              // console.error('DataConsumer "error" event:%o', error)
+              console.error('DataConsumer "error" event:%o', error)
 
               this.store.dispatch('notify', {
                 type: 'error',
@@ -411,10 +411,10 @@ export default class RoomClient {
             })
 
             dataConsumer.on('message', (message) => {
-              // console.debug(
-              //   'DataConsumer "message" event [streamId:%d]',
-              //   dataConsumer.sctpStreamParameters.streamId
-              // )
+              console.debug(
+                'DataConsumer "message" event [streamId:%d]',
+                dataConsumer.sctpStreamParameters.streamId
+              )
 
               // TODO: For debugging.
               window.DC_MESSAGE = message
@@ -424,7 +424,7 @@ export default class RoomClient {
                 const number = view.getUint32()
 
                 if (number === 2 ** 32 - 1) {
-                  // console.warn('dataChannelTest finished!')
+                  console.warn('dataChannelTest finished!')
 
                   this._nextDataChannelTestNumber = 0
 
@@ -432,17 +432,17 @@ export default class RoomClient {
                 }
 
                 if (number > this._nextDataChannelTestNumber) {
-                  // console.warn(
-                  //   'dataChannelTest: %s packets missing',
-                  //   number - this._nextDataChannelTestNumber
-                  // )
+                  console.warn(
+                    'dataChannelTest: %s packets missing',
+                    number - this._nextDataChannelTestNumber
+                  )
                 }
 
                 this._nextDataChannelTestNumber = number + 1
 
                 return
               } else if (typeof message !== 'string') {
-                // console.warn('ignoring DataConsumer "message" (not a string)')
+                console.warn('ignoring DataConsumer "message" (not a string)')
 
                 return
               }
@@ -450,18 +450,15 @@ export default class RoomClient {
               switch (dataConsumer.label) {
                 case 'chat': {
                   const { peers } = this.store.state
-                  let peersArray = Object.keys(peers).map(
+                  const peersArray = Object.keys(peers).map(
                     (_peerId) => peers[_peerId]
                   )
-                  peersArray = JSON.parse(JSON.stringify(peersArray))[0]
-                  console.log(peersArray)
-                  peersArray.forEach(peer => console.log(peer))
-                  const sendingPeer = peersArray.filter(peer =>
-                    peer.id.includes(dataConsumer.appData.peerId)
-                  )[0]
+                  const sendingPeer = peersArray.find((peer) =>
+                    peer.dataConsumers.includes(dataConsumer.id)
+                  )
 
                   if (!sendingPeer) {
-                    // console.warn('DataConsumer "message" from unknown peer')
+                    console.warn('DataConsumer "message" from unknown peer')
 
                     break
                   }
@@ -523,11 +520,11 @@ export default class RoomClient {
     })
 
     this._protoo.on('notification', (notification) => {
-      // console.debug(
-      //   'proto "notification" event [method:%s, data:%o]',
-      //   notification.method,
-      //   notification.data
-      // )
+      console.debug(
+        'proto "notification" event [method:%s, data:%o]',
+        notification.method,
+        notification.data
+      )
 
       switch (notification.method) {
         case 'producerScore': {
@@ -585,7 +582,7 @@ export default class RoomClient {
         }
 
         case 'downlinkBwe': {
-          // console.debug('downlinkBwe event: %o', notification.data)
+          console.debug('downlinkBwe event: %o', notification.data)
           break
         }
 
@@ -708,12 +705,12 @@ export default class RoomClient {
   }
 
   async enableMic() {
-    // console.debug('enableMic()')
+    console.debug('enableMic()')
 
     if (this._micProducer) return
 
     if (!this._mediasoupDevice.canProduce('audio')) {
-      // console.error('enableMic() | cannot produce audio')
+      console.error('enableMic() | cannot produce audio')
 
       return
     }
@@ -722,7 +719,7 @@ export default class RoomClient {
 
     try {
       if (!this._externalVideo) {
-        // console.debug('enableMic() | calling getUserMedia()')
+        console.debug('enableMic() | calling getUserMedia()')
 
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true
@@ -771,7 +768,7 @@ export default class RoomClient {
         this.disableMic().catch(() => {})
       })
     } catch (error) {
-      // console.error('enableMic() | failed:%o', error)
+      console.error('enableMic() | failed:%o', error)
 
       this.store.dispatch('notify', {
         type: 'error',
@@ -783,7 +780,7 @@ export default class RoomClient {
   }
 
   async disableMic() {
-    // console.debug('disableMic()')
+    console.debug('disableMic()')
 
     if (!this._micProducer) return
 
@@ -808,7 +805,7 @@ export default class RoomClient {
   }
 
   async muteMic() {
-    // console.debug('muteMic()')
+    console.debug('muteMic()')
 
     this._micProducer.pause()
 
@@ -831,7 +828,7 @@ export default class RoomClient {
   }
 
   async unmuteMic() {
-    // console.debug('unmuteMic()')
+    console.debug('unmuteMic()')
 
     this._micProducer.resume()
 
@@ -854,13 +851,13 @@ export default class RoomClient {
   }
 
   async enableWebcam() {
-    // console.debug('enableWebcam()')
+    console.debug('enableWebcam()')
 
     if (this._webcamProducer) return
     else if (this._shareProducer) await this.disableShare()
 
     if (!this._mediasoupDevice.canProduce('video')) {
-      // console.error('enableWebcam() | cannot produce video')
+      console.error('enableWebcam() | cannot produce video')
 
       return
     }
@@ -881,7 +878,7 @@ export default class RoomClient {
 
         if (!device) throw new Error('no webcam devices')
 
-        // console.debug('enableWebcam() | calling getUserMedia()')
+        console.debug('enableWebcam() | calling getUserMedia()')
 
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
@@ -952,7 +949,7 @@ export default class RoomClient {
         this.disableWebcam().catch(() => {})
       })
     } catch (error) {
-      // console.error('enableWebcam() | failed:%o', error)
+      console.error('enableWebcam() | failed:%o', error)
 
       this.store.dispatch('notify', {
         type: 'error',
@@ -968,7 +965,7 @@ export default class RoomClient {
   }
 
   async disableWebcam() {
-    // console.debug('disableWebcam()')
+    console.debug('disableWebcam()')
 
     if (!this._webcamProducer) return
 
@@ -992,7 +989,7 @@ export default class RoomClient {
   }
 
   async changeWebcam() {
-    // console.debug('changeWebcam()')
+    console.debug('changeWebcam()')
 
     this.store.commit('me/setWebcamInProgress', {
       flag: true
@@ -1013,10 +1010,10 @@ export default class RoomClient {
 
       this._webcam.device = this._webcams.get(array[idx])
 
-      // console.debug(
-      //   'changeWebcam() | new selected webcam [device:%o]',
-      //   this._webcam.device
-      // )
+      console.debug(
+        'changeWebcam() | new selected webcam [device:%o]',
+        this._webcam.device
+      )
 
       // Reset video resolution to HD.
       this._webcam.resolution = 'hd'
@@ -1027,7 +1024,7 @@ export default class RoomClient {
       // having both front/back cameras open at the same time).
       this._webcamProducer.track.stop()
 
-      // console.debug('changeWebcam() | calling getUserMedia()')
+      console.debug('changeWebcam() | calling getUserMedia()')
 
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
@@ -1059,7 +1056,7 @@ export default class RoomClient {
   }
 
   async changeWebcamResolution() {
-    // console.debug('changeWebcamResolution()')
+    console.debug('changeWebcamResolution()')
 
     this.store.commit('me/setWebcamInProgress', {
       flag: true
@@ -1080,7 +1077,7 @@ export default class RoomClient {
           this._webcam.resolution = 'hd'
       }
 
-      // console.debug('changeWebcamResolution() | calling getUserMedia()')
+      console.debug('changeWebcamResolution() | calling getUserMedia()')
 
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
@@ -1098,7 +1095,7 @@ export default class RoomClient {
         track
       })
     } catch (error) {
-      // console.error('changeWebcamResolution() | failed: %o', error)
+      console.error('changeWebcamResolution() | failed: %o', error)
 
       this.store.dispatch('notify', {
         type: 'error',
@@ -1112,13 +1109,13 @@ export default class RoomClient {
   }
 
   async enableShare() {
-    // console.debug('enableShare()')
+    console.debug('enableShare()')
 
     if (this._shareProducer) return
     else if (this._webcamProducer) await this.disableWebcam()
 
     if (!this._mediasoupDevice.canProduce('video')) {
-      // console.error('enableShare() | cannot produce video')
+      console.error('enableShare() | cannot produce video')
 
       return
     }
@@ -1130,7 +1127,7 @@ export default class RoomClient {
     })
 
     try {
-      // console.debug('enableShare() | calling getUserMedia()')
+      console.debug('enableShare() | calling getUserMedia()')
 
       const stream = await navigator.mediaDevices.getDisplayMedia({
         audio: false,
@@ -1212,7 +1209,7 @@ export default class RoomClient {
         this.disableShare().catch(() => {})
       })
     } catch (error) {
-      // console.error('enableShare() | failed:%o', error)
+      console.error('enableShare() | failed:%o', error)
 
       if (error.name !== 'NotAllowedError') {
         this.store.dispatch('notify', {
@@ -1230,7 +1227,7 @@ export default class RoomClient {
   }
 
   async disableShare() {
-    // console.debug('disableShare()')
+    console.debug('disableShare()')
 
     if (!this._shareProducer) return
 
@@ -1255,7 +1252,7 @@ export default class RoomClient {
   }
 
   enableAudioOnly() {
-    // console.debug('enableAudioOnly()')
+    console.debug('enableAudioOnly()')
 
     this.store.commit('me/setAudioOnlyInProgress', {
       flag: true
@@ -1263,11 +1260,11 @@ export default class RoomClient {
 
     this.disableWebcam()
 
-    // for (const consumer of this._consumers.values()) {
-    //   if (consumer.kind !== 'video') continue
-    //
-    //   this._pauseConsumer(consumer)
-    // }
+    for (const consumer of this._consumers.values()) {
+      if (consumer.kind !== 'video') continue
+
+      this._pauseConsumer(consumer)
+    }
 
     this.store.commit('me/setAudioOnlyState', {
       enabled: true
@@ -1293,9 +1290,9 @@ export default class RoomClient {
       this.enableWebcam()
     }
 
-    console.log( this._consumers.values())
     for (const consumer of this._consumers.values()) {
       if (consumer.kind !== 'video') continue
+
       this._resumeConsumer(consumer)
     }
 
@@ -1309,7 +1306,7 @@ export default class RoomClient {
   }
 
   muteAudio() {
-    // console.debug('muteAudio()')
+    console.debug('muteAudio()')
 
     this.store.commit('me/setAudioMutedState', {
       flag: true
@@ -1317,7 +1314,7 @@ export default class RoomClient {
   }
 
   unmuteAudio() {
-    // console.debug('unmuteAudio()')
+    console.debug('unmuteAudio()')
 
     this.store.commit('me/setAudioMutedState', {
       flag: false
@@ -1325,7 +1322,7 @@ export default class RoomClient {
   }
 
   async restartIce() {
-    // console.debug('restartIce()')
+    console.debug('restartIce()')
 
     this.store.commit('me/setRestartIceInProgress', {
       flag: true
@@ -1365,7 +1362,7 @@ export default class RoomClient {
   }
 
   async setMaxSendingSpatialLayer(spatialLayer) {
-    // console.debug('setMaxSendingSpatialLayer() [spatialLayer:%s]', spatialLayer)
+    console.debug('setMaxSendingSpatialLayer() [spatialLayer:%s]', spatialLayer)
 
     try {
       if (this._webcamProducer)
@@ -1383,12 +1380,12 @@ export default class RoomClient {
   }
 
   async setConsumerPreferredLayers(consumerId, spatialLayer, temporalLayer) {
-    // console.debug(
-    //   'setConsumerPreferredLayers() [consumerId:%s, spatialLayer:%s, temporalLayer:%s]',
-    //   consumerId,
-    //   spatialLayer,
-    //   temporalLayer
-    // )
+    console.debug(
+      'setConsumerPreferredLayers() [consumerId:%s, spatialLayer:%s, temporalLayer:%s]',
+      consumerId,
+      spatialLayer,
+      temporalLayer
+    )
 
     try {
       await this._protoo.request('setConsumerPreferredLayers', {
@@ -1413,11 +1410,11 @@ export default class RoomClient {
   }
 
   async setConsumerPriority(consumerId, priority) {
-    // console.debug(
-    //   'setConsumerPriority() [consumerId:%s, priority:%d]',
-    //   consumerId,
-    //   priority
-    // )
+    console.debug(
+      'setConsumerPriority() [consumerId:%s, priority:%d]',
+      consumerId,
+      priority
+    )
 
     try {
       await this._protoo.request('setConsumerPriority', {
@@ -1430,7 +1427,7 @@ export default class RoomClient {
         priority
       })
     } catch (error) {
-      // console.error('setConsumerPriority() | failed:%o', error)
+      console.error('setConsumerPriority() | failed:%o', error)
 
       this.store.dispatch('notify', {
         type: 'error',
@@ -1440,7 +1437,7 @@ export default class RoomClient {
   }
 
   async requestConsumerKeyFrame(consumerId) {
-    // console.debug('requestConsumerKeyFrame() [consumerId:%s]', consumerId)
+    console.debug('requestConsumerKeyFrame() [consumerId:%s]', consumerId)
 
     try {
       await this._protoo.request('requestConsumerKeyFrame', { consumerId })
@@ -1449,7 +1446,7 @@ export default class RoomClient {
         text: 'Keyframe requested for video consumer'
       })
     } catch (error) {
-      // console.error('requestConsumerKeyFrame() | failed:%o', error)
+      console.error('requestConsumerKeyFrame() | failed:%o', error)
 
       this.store.dispatch('notify', {
         type: 'error',
@@ -1459,7 +1456,7 @@ export default class RoomClient {
   }
 
   async enableChatDataProducer() {
-    // console.debug('enableChatDataProducer()')
+    console.debug('enableChatDataProducer()')
 
     if (!this._useDataChannel) return
 
@@ -1491,11 +1488,11 @@ export default class RoomClient {
       })
 
       this._chatDataProducer.on('open', () => {
-        // console.debug('chat DataProducer "open" event')
+        console.debug('chat DataProducer "open" event')
       })
 
       this._chatDataProducer.on('close', () => {
-        // console.error('chat DataProducer "close" event')
+        console.error('chat DataProducer "close" event')
 
         this._chatDataProducer = null
 
@@ -1506,7 +1503,7 @@ export default class RoomClient {
       })
 
       this._chatDataProducer.on('error', (error) => {
-        // console.error('chat DataProducer "error" event:%o', error)
+        console.error('chat DataProducer "error" event:%o', error)
 
         this.store.dispatch('notify', {
           type: 'error',
@@ -1515,10 +1512,10 @@ export default class RoomClient {
       })
 
       this._chatDataProducer.on('bufferedamountlow', () => {
-        // console.debug('chat DataProducer "bufferedamountlow" event')
+        console.debug('chat DataProducer "bufferedamountlow" event')
       })
     } catch (error) {
-      // console.error('enableChatDataProducer() | failed:%o', error)
+      console.error('enableChatDataProducer() | failed:%o', error)
 
       this.store.dispatch('notify', {
         type: 'error',
@@ -1530,7 +1527,7 @@ export default class RoomClient {
   }
 
   async enableBotDataProducer() {
-    // console.debug('enableBotDataProducer()')
+    console.debug('enableBotDataProducer()')
 
     if (!this._useDataChannel) return
 
@@ -1562,11 +1559,11 @@ export default class RoomClient {
       })
 
       this._botDataProducer.on('open', () => {
-        // console.debug('bot DataProducer "open" event')
+        console.debug('bot DataProducer "open" event')
       })
 
       this._botDataProducer.on('close', () => {
-        // console.error('bot DataProducer "close" event')
+        console.error('bot DataProducer "close" event')
 
         this._botDataProducer = null
 
@@ -1577,7 +1574,7 @@ export default class RoomClient {
       })
 
       this._botDataProducer.on('error', (error) => {
-        // console.error('bot DataProducer "error" event:%o', error)
+        console.error('bot DataProducer "error" event:%o', error)
 
         this.store.dispatch('notify', {
           type: 'error',
@@ -1589,7 +1586,7 @@ export default class RoomClient {
         console.debug('bot DataProducer "bufferedamountlow" event')
       })
     } catch (error) {
-      // console.error('enableBotDataProducer() | failed:%o', error)
+      console.error('enableBotDataProducer() | failed:%o', error)
 
       this.store.dispatch('notify', {
         type: 'error',

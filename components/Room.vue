@@ -25,15 +25,20 @@
       <Peers v-if="roomClientReady" :room-client="roomClient" />
 
       <div class="me-container" :class="{ 'active-speaker': amActiveSpeaker }">
-        <Me v-if="roomClientReady" :room-client="roomClient" />
+        <Me
+          v-if="roomClientReady"
+          :room-client="roomClient"
+          @onDetailClick="showRightBar"
+        />
       </div>
+      <!-- <div class="chat-input-container">
+        <ChatInput v-if="roomClientReady" :room-client="roomClient" />
+      </div> -->
       <div class="me-button-container">
         <div class="icons flex-a">
+          
           <span class="mr-2 pointer flex-c-m icon-28 ml-1">
-            <font-awesome-icon
-              :icon="['fas', 'users']"
-              @click="showRightBar(tab.People)"
-            />
+            <font-awesome-icon :icon="['fas', 'users']" @click="showRightBar(tab.People)" />
           </span>
           <!-- <span class="mr-2 pointer flex-c-m icon-28 ">
             <font-awesome-icon
@@ -49,9 +54,6 @@
           </span>
         </div>
       </div>
-      <!-- <div class="chat-input-container">
-        <ChatInput v-if="roomClientReady" :room-client="roomClient" />
-      </div> -->
 
       <div class="sidebar">
         <div
@@ -71,27 +73,15 @@
           @click="toggleMute"
         />
 
-        <div
-          class="button share-screen"
-          title="Share screen"
+        <!-- <div
+          class="button restart-ice"
           :class="{
-            shareState,
-            disabled: me.shareInProgress || me.webcamInProgress
+            disabled: me.restartIceInProgress
           }"
-          @click="toggleShare"
-        />
-
-        <!--        <div-->
-        <!--          class="button restart-ice"-->
-        <!--          :class="{-->
-        <!--            disabled: me.restartIceInProgress-->
-        <!--          }"-->
-        <!--          title="Restart ICE"-->
-        <!--          @click="roomClient.restartIce()"-->
-        <!--        />-->
+          title="Restart ICE"
+          @click="roomClient.restartIce()"
+        /> -->
       </div>
-
-      <Stats v-if="roomClientReady" :room-client="roomClient" />
       <!-- right bar -->
       <transition name="slide">
         <div class="right-bar" v-if="visibleRightBar">
@@ -102,6 +92,7 @@
         </div>
       </transition>
       <!--end right bar -->
+
       <NetworkThrottle
         v-if="roomClientReady && NETWORK_THROTTLE_SECRET"
         :room-client="roomClient"
@@ -116,7 +107,6 @@ import clipboardCopy from 'clipboard-copy'
 import UrlParse from 'url-parse'
 import Notifications from '~/components/Notifications'
 import NetworkThrottle from '~/components/NetworkThrottle'
-import Stats from '~/components/Stats'
 import DetailMeet from '~/components/DetailMeet'
 import ChatInput from '~/components/ChatInput'
 import Me from '~/components/Me'
@@ -129,7 +119,14 @@ import randomString from '~/utils/randomString'
 import randomName from '~/utils/randomName'
 
 export default {
-  components: { DetailMeet, Notifications, NetworkThrottle, Stats, ChatInput, Me, Peers },
+  components: {
+    Notifications,
+    NetworkThrottle,
+    ChatInput,
+    Me,
+    Peers,
+    DetailMeet
+  },
   data() {
     return {
       roomClient: null,
@@ -137,7 +134,7 @@ export default {
       tab: {
         Chat: 1,
         People: 2,
-        File: 3
+        File: 3,
       },
       tabSelected: null,
       visibleRightBar: false,
@@ -154,13 +151,6 @@ export default {
     },
     room() {
       return this.$store.state.room
-    },
-    shareState() {
-      if (Boolean(this.videoProducer) && this.videoProducer.type === 'share') {
-        return 'on'
-      } else {
-        return 'off'
-      }
     }
   },
   mounted() {
@@ -279,13 +269,6 @@ export default {
         ? this.roomClient.unmuteAudio()
         : this.roomClient.muteAudio()
     },
-    toggleShare() {
-      if (this.shareState === 'on') {
-        this.roomClient.disableShare()
-      } else {
-        this.roomClient.enableShare()
-      }
-    },
     onInvitationLinkClick(event) {
       // If this is a 'Open in new window/tab' don't prevent
       // click default action.
@@ -307,7 +290,7 @@ export default {
         })
       )
     },
-     showRightBar(tab) {
+    showRightBar(tab) {
       this.tabSelected = tab
       this.visibleRightBar = true
     },
@@ -317,6 +300,7 @@ export default {
   }
 }
 </script>
+
 <style lang="scss" scoped>
 .right-bar {
   position: fixed;

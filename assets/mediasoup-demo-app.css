@@ -1581,6 +1581,10 @@ body {
   }
 }
 
+#mediasoup-demo-app-container [data-component='PeerView']>.info>.icons>.icon.go {
+  background-image: url("./icons//right-arrow-button.svg");
+}
+
 #mediasoup-demo-app-container [data-component='PeerView']>.info>.icons>.icon.info.on {
   background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTEgMTVoLTJ2LTZoMnY2em0wLThoLTJWN2gydjJ6Ii8+PC9zdmc+Cg==")
 }
