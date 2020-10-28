@@ -51,7 +51,6 @@
       @onChangeDisplayName="changeDisplayName"
       @onChangeMaxSendingSpatialLayer="changeMaxSendingSpatialLayer"
       @onStatsClick="setStatsPeerId"
-      @onDetailClick="onDetailClick"
     />
   </div>
 </template>
@@ -137,9 +136,6 @@ export default {
     }
   },
   methods: {
-    onDetailClick(event) {
-      this.$emit('onDetailClick',event)
-    },
     changeDisplayName(name) {
       this.roomClient.changeDisplayName(name)
     },

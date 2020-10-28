@@ -385,6 +385,11 @@ html {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   background: #e8cebf;
+  background: -webkit-linear-gradient(bottom, #f4e2d8, #e8cebf);
+  background: -moz-linear-gradient(bottom, #f4e2d8, #e8cebf);
+  background: -o-linear-gradient(bottom, #f4e2d8, #e8cebf);
+  background: -ms-linear-gradient(bottom, #f4e2d8, #e8cebf);
+  background: linear-gradient(to top, #f4e2d8, #e8cebf);
   /* background: #141e30;
   background: -webkit-linear-gradient(bottom, #243b55, #141e30);
   background: -moz-linear-gradient(bottom, #243b55, #141e30);
@@ -1574,10 +1579,6 @@ body {
     width: 26px;
     height: 26px
   }
-}
-
-#mediasoup-demo-app-container [data-component='PeerView']>.info>.icons>.icon.go {
-  background-image: url("./icons//right-arrow-button.svg");
 }
 
 #mediasoup-demo-app-container [data-component='PeerView']>.info>.icons>.icon.info.on {

@@ -50,7 +50,6 @@
       @onChangeVideoPriority="onChangeVideoPriority"
       @onRequestKeyFrame="onRequestKeyFrame"
       @onStatsClick="onSetStatsPeerId"
-     
     />
   </div>
 </template>
@@ -114,7 +113,6 @@ export default {
     }
   },
   methods: {
-  
     onRequestKeyFrame() {
       this.roomClient.requestConsumerKeyFrame(this.videoConsumer.id)
     },

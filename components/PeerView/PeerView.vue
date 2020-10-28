@@ -2,13 +2,14 @@
   <div data-component="PeerView">
     <div class="info">
       <div class="icons">
-          <div
-            class="icon info mr-2"
-            :class="{ on: showInfo }"
-            @click="showInfo = !showInfo"
-          />
-         
-        </div>
+        <div
+          class="icon info"
+          :class="{ on: showInfo }"
+          @click="showInfo = !showInfo"
+        />
+
+        <div class="icon stats" @click="onStatsClick" />
+      </div>
 
       <div class="box" :class="{ visible: showInfo }">
         <div v-if="audioProducerId || audioConsumerId">
@@ -224,12 +225,12 @@
           </span>
         </div>
 
-        <!-- <div v-if="peer.device" class="row">
+        <div v-if="peer.device" class="row">
           <span class="device-icon" :class="peer.device.flag" />
           <span class="device-version">
             {{ peer.device.name }} {{ peer.device.version || '' }}
           </span>
-        </div> -->
+        </div>
       </div>
     </div>
 
@@ -292,8 +293,7 @@ export default {
       p_videoTrack: null,
       p_audioTrack: null,
       videoResolutionPeriodicTimer: null,
-      faceDetectionRequestAnimationFrame: null,
-     
+      faceDetectionRequestAnimationFrame: null
     }
   },
   computed: {
@@ -540,6 +540,7 @@ export default {
         newPreferredTemporalLayer
       )
     },
+
     onStatsClick() {
       if (this.isMe) {
         this.$emit('onStatsClick', this.me.id)
