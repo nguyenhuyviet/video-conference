@@ -94,7 +94,7 @@
         >
           <font-awesome-icon :icon="['fas', 'share']" />
         </div>
-        <div class="button share-screen stop-call  flex-c-m" title="Thoát">
+        <div class="button share-screen stop-call  flex-c-m" title="Thoát" @click="stopCall">
           <font-awesome-icon :icon="['fas', 'phone']" />
         </div>
         <!--        <div-->
@@ -339,6 +339,9 @@ export default {
     },
     hidenRightBar() {
       this.visibleRightBar = false
+    },
+    stopCall(){
+      this.$router.push('/')
     }
   }
 }
