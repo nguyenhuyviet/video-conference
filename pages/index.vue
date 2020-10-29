@@ -13,7 +13,6 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-
       <!-- <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav m-auto">
           <li class="nav-item active">
@@ -74,9 +73,10 @@
     <div class="overlay">
       <transition name="fade">
         <img :src="firstSlide.imgSource" v-if="show" />
+      </transition>
+      <transition name="fade">
         <img :src="secondSlide.imgSource" v-if="!show" />
       </transition>
-
       <div class="cover"></div>
     </div>
   </div>
@@ -104,20 +104,22 @@ export default {
       slides: [
         {
           sortOrder: 1,
-          text: 'START STREAMING NOW',
+          text: 'Tạo cuộc gọi dễ dàng ',
           imgSource: slide_0
         },
         {
           sortOrder: 2,
-          text: 'ULTRA HD RESOLUTION',
+          text: 'Tất cả đều miễn phí',
           imgSource: slide_1
         },
         {
           sortOrder: 3,
-          text: 'LATEST MOVIES & SERIES',
+          text: 'Hình ảnh, âm thanh sắc nét',
           imgSource: slide_2
         }
-      ]
+      ],
+      testshow: true,
+      testshow1: false
     }
   },
   props: {},
@@ -130,7 +132,7 @@ export default {
   },
   methods: {
     test() {
-      this.showText = !this.showText
+      this.testshow = !this.testshow
     },
     runCarousel() {
       if (this.interval) {
@@ -359,10 +361,10 @@ export default {
   }
   .text-slide {
     position: absolute;
-    top: -65px;
+    top: -70px;
     width: 1000px;
     overflow: hidden;
-    height: 60px;
+    height: 65px;
     .text {
       font-size: 60px;
       position: absolute;
@@ -532,12 +534,11 @@ button {
   top: 60px;
 }
 
-
 .fade-enter-active {
-  -moz-transition-duration: 1s;
-  -webkit-transition-duration: 1s;
-  -o-transition-duration: 1s;
-  transition-duration: 1s;
+  -moz-transition-duration: 2s;
+  -webkit-transition-duration: 2s;
+  -o-transition-duration: 2s;
+  transition-duration: 2s;
   -moz-transition-timing-function: ease-in-out;
   -webkit-transition-timing-function: ease-in-out;
   -o-transition-timing-function: ease-in-out;
@@ -545,10 +546,10 @@ button {
 }
 
 .fade-leave-active {
-  -moz-transition-duration: 1s;
-  -webkit-transition-duration: 1s;
-  -o-transition-duration: 1s;
-  transition-duration: 1s;
+  -moz-transition-duration: 2s;
+  -webkit-transition-duration: 2s;
+  -o-transition-duration: 2s;
+  transition-duration: 2s;
   -moz-transition-timing-function: ease-in-out;
   -webkit-transition-timing-function: ease-in-out;
   -o-transition-timing-function: ease-in-out;
@@ -557,12 +558,11 @@ button {
 
 .fade-enter-to,
 .fade-leave {
-    opacity: 1;
+  opacity: 1;
 }
 
 .fade-enter,
 .fade-leave-to {
-    opacity: 0;
-
+  opacity: 0;
 }
 </style>
