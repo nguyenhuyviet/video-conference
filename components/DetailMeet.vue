@@ -324,7 +324,7 @@ export default {
     .tab-active::after {
       content: '';
       position: absolute;
-      background: #00796b;
+      background: #00aff0;
       height: 5px;
       width: 112px;
       top: 46px;

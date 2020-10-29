@@ -1,7 +1,7 @@
 <template>
   <div class="home-page">
     <nav class="header navbar navbar-expand-lg">
-      <div class="navbar-brand">Navbar</div>
+      <div class="navbar-brand">CVĐHĐCNTT</div>
       <button
         class="navbar-toggler"
         type="button"
@@ -14,7 +14,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <!-- <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav m-auto">
           <li class="nav-item active">
             <div class="nav-link">Home</div>
@@ -34,18 +34,18 @@
           </li>
         </ul>
         <button class="login-button" @click="test()">LOGIN</button>
-      </div>
+      </div> -->
     </nav>
 
     <div class="container-fluid main-content">
       <div class="row h-100 align-items-center justify-content-center">
         <div class="button-group-center flex-c-m">
-          <button class="add-new-meet">
+          <!-- <button class="add-new-meet">
             <div style="margin-right: 8px">
               <i class="fa fa-video-camera" aria-hidden="true"></i>
             </div>
             <div>Cuộc họp mới</div>
-          </button>
+          </button> -->
 
           <div class="typing-code flex-c-m">
             <input
@@ -54,10 +54,10 @@
               placeholder="Nhập vào một mã"
             />
             <button class="btn-join" @click="joinRoom()">
-               <div class="icon stats"/>
+              <font-awesome-icon :icon="['fa', 'arrow-right']" />
             </button>
             <div class="icon-keyboard">
-              <i class="fa fa-keyboard-o" aria-hidden="true"></i>
+              <font-awesome-icon :icon="['fas', 'keyboard']" />
             </div>
           </div>
 
@@ -82,9 +82,9 @@
 </template>
 
 <script>
-import slide_0 from '../assets/images/monleo.jpg'
-import slide_1 from '../assets/images/monleo2.jpg'
-import slide_2 from '../assets/images/631739.jpg'
+import slide_0 from '../assets/images/slide1.jpg'
+import slide_1 from '../assets/images/slide2.jpg'
+import slide_2 from '../assets/images/slide3.jpg'
 
 export default {
   name: 'Home',
@@ -248,7 +248,7 @@ export default {
 
         font-weight: 600;
         margin-right: 24px;
-        background-color: #00796b;
+        background-color: #0b64a4;
         border: none;
         border-radius: 4px;
         display: flex;
@@ -269,44 +269,47 @@ export default {
         min-width: 270px;
         .icon-keyboard {
           position: absolute;
-          top: 12px;
+          top: 22px;
           left: 12px;
-          color: #5f6368;
+          color: #ffffff;
         }
         .typing-input {
-          height: 48px;
+          height: 60px;
           width: 400px;
           border: solid 1px #e9e9e9;
           font-size: 17px;
+          border-radius: 4px;
           padding: 0px 40px;
-          color: #3c4043;
-          border: none;
+          color: #ffffff;
           margin-right: 8px;
         }
 
         .typing-input:hover {
-          outline: solid 2px #000000;
+          border: solid 1px #0b64a4;
+
+          outline: none;
         }
 
         .typing-input:focus {
-          outline: solid 2px #00796b;
+          border: solid 1px #0b64a4;
+          outline: none;
         }
 
         .btn-join {
-          height: 48px;
-          color: #00796b;
-          width: 48px;
-          font-size: 17px;
+          height: 60px;
+          color: white;
+          width: 60px;
+          font-size: 28px;
           font-weight: 600;
-          background-color: #f5faf9;
+          background-color: #0b64a4;
           border: none;
-          border-radius: 3px;
+          border-radius: 4px;
           cursor: pointer;
         }
 
         .btn-join:hover {
-          color: #004d40;
-          background-color: #e1efee;
+          color: white;
+          background-color: #0a5e9b;
         }
 
         .btn-join:focus {
@@ -328,7 +331,7 @@ export default {
           position: relative;
           .icon-keyboard {
             position: absolute;
-            top: 6px;
+            top: 10px;
             left: 12px;
             color: #5f6368;
           }
@@ -340,14 +343,11 @@ export default {
             border: solid 1px #e9e9e9;
             font-size: 17px;
             color: #3c4043;
-            border: none;
           }
 
           .btn-join {
             height: 36px;
             width: 36px;
-
-            color: #00796b;
             font-size: 13px;
             cursor: pointer;
           }
@@ -528,5 +528,39 @@ button {
 .slide-enter,
 .slide-leave-to {
   top: 60px;
+}
+
+
+.fade-enter-active {
+  -moz-transition-duration: 1s;
+  -webkit-transition-duration: 1s;
+  -o-transition-duration: 1s;
+  transition-duration: 1s;
+  -moz-transition-timing-function: ease-in-out;
+  -webkit-transition-timing-function: ease-in-out;
+  -o-transition-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
+}
+
+.fade-leave-active {
+  -moz-transition-duration: 1s;
+  -webkit-transition-duration: 1s;
+  -o-transition-duration: 1s;
+  transition-duration: 1s;
+  -moz-transition-timing-function: ease-in-out;
+  -webkit-transition-timing-function: ease-in-out;
+  -o-transition-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
+}
+
+.fade-enter-to,
+.fade-leave {
+    opacity: 1;
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
+
 }
 </style>

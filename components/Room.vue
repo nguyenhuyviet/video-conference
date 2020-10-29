@@ -8,7 +8,7 @@
         <p class="text" :class="room.state">{{ room.state }}</p>
       </div>
 
-      <div class="room-link-wrapper">
+      <!-- <div class="room-link-wrapper">
         <div class="room-link">
           <a
             class="link"
@@ -20,7 +20,7 @@
             invitation link
           </a>
         </div>
-      </div>
+      </div> -->
 
       <Peers v-if="roomClientReady" :room-client="roomClient" />
 
@@ -54,32 +54,38 @@
               @click="showRightBar(tab.File)"
             />
           </span>
+          <span class="mr-2 pointer flex-c-m icon-28 ">
+            <font-awesome-icon
+              :icon="['fas', 'clone']"
+               @click="onInvitationLinkClick"
+            />
+          </span>
         </div>
       </div>
       <div class="sidebar">
         <div
-          class="button hide-videos flex-c-m"
+          class="button hide-videos flex-c-m mr-3"
           :class="{
             'not-available': me.audioOnly,
             disabled: me.audioOnlyInProgress
           }"
-          title="Show/hide participants video"
+          title="ẩn/hiện video"
           @click="toggleParticipantsVideo"
         >
           <font-awesome-icon :icon="['fas', 'video']" />
         </div>
 
         <div
-          class="button mute-audio  flex-c-m"
+          class="button mute-audio  flex-c-m mr-3"
           :class="{ 'not-available': me.audioMuted }"
-          title="Mute/unmute participants audio"
+          title="Tắt/bật audio"
           @click="toggleMute"
         >
           <font-awesome-icon :icon="['fas', 'microphone']" />
         </div>
         <div
-          class="button share-screen  flex-c-m"
-          title="Share screen"
+          class="button share-screen  flex-c-m mr-3"
+          title="Chia sẻ màn hình"
           :class="{
             shareState,
             disabled: me.shareInProgress || me.webcamInProgress
@@ -87,6 +93,9 @@
           @click="toggleShare"
         >
           <font-awesome-icon :icon="['fas', 'share']" />
+        </div>
+        <div class="button share-screen stop-call  flex-c-m" title="Thoát">
+          <font-awesome-icon :icon="['fas', 'phone']" />
         </div>
         <!--        <div-->
         <!--          class="button restart-ice"-->
@@ -336,6 +345,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.stop-call {
+  transform: rotate(-135deg);
+  background-color: #c5221f !important;
+  border: solid 1px #c5221f;
+  color: #ffffff;
+}
+
+.stop-call:hover {
+  background-color: #983a38 !important;
+  border: solid 1px #983a38;
+}
+
 .right-bar {
   position: fixed;
   width: 360px;
