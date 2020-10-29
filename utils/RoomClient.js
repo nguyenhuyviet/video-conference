@@ -450,12 +450,15 @@ export default class RoomClient {
               switch (dataConsumer.label) {
                 case 'chat': {
                   const { peers } = this.store.state
-                  const peersArray = Object.keys(peers).map(
+                  let peersArray = Object.keys(peers).map(
                     (_peerId) => peers[_peerId]
                   )
-                  const sendingPeer = peersArray.find((peer) =>
-                    peer.dataConsumers.includes(dataConsumer.id)
-                  )
+                  peersArray = JSON.parse(JSON.stringify(peersArray))[0]
+                  console.log(peersArray)
+                  peersArray.forEach(peer => console.log(peer))
+                  const sendingPeer = peersArray.filter(peer =>
+                    peer.id.includes(dataConsumer.appData.peerId)
+                  )[0]
 
                   if (!sendingPeer) {
                     console.warn('DataConsumer "message" from unknown peer')
@@ -1260,11 +1263,11 @@ export default class RoomClient {
 
     this.disableWebcam()
 
-    for (const consumer of this._consumers.values()) {
-      if (consumer.kind !== 'video') continue
-
-      this._pauseConsumer(consumer)
-    }
+    // for (const consumer of this._consumers.values()) {
+    //   if (consumer.kind !== 'video') continue
+    //
+    //   this._pauseConsumer(consumer)
+    // }
 
     this.store.commit('me/setAudioOnlyState', {
       enabled: true

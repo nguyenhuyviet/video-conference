@@ -31,9 +31,9 @@
           @onDetailClick="showRightBar"
         />
       </div>
-      <!-- <div class="chat-input-container">
+      <div class="chat-input-container">
         <ChatInput v-if="roomClientReady" :room-client="roomClient" />
-      </div> -->
+      </div>
       <div class="me-button-container">
         <div class="icons flex-a">
           <span class="mr-2 pointer flex-c-m icon-28 ml-1">
@@ -148,6 +148,10 @@ import randomString from '~/utils/randomString'
 import randomName from '~/utils/randomName'
 
 export default {
+  props: { displayName: {
+      type: String,
+      required: true
+    }},
   components: {
     Notifications,
     NetworkThrottle,
@@ -192,12 +196,13 @@ export default {
   },
   mounted() {
     const urlParser = new UrlParse(window.location.href, true)
+
     const peerId = randomString(8).toLowerCase()
 
     let roomId = urlParser.query.roomId
-    let displayName =
-      urlParser.query.displayName ||
-      (cookiesManager.getUser() || {}).displayName
+    let displayName = this.displayName
+
+    console.log(displayName)
     const handler = urlParser.query.handler
     const useSimulcast = urlParser.query.simulcast !== 'false'
     const useSharingSimulcast = urlParser.query.sharingSimulcast !== 'false'

@@ -52,6 +52,7 @@
               class="typing-input"
               type="text"
               placeholder="Nhập vào một mã"
+              v-model="roomId"
             />
             <button class="btn-join" @click="joinRoom()">
               <font-awesome-icon :icon="['fa', 'arrow-right']" />
@@ -91,6 +92,7 @@ export default {
   components: {},
   data() {
     return {
+      roomId:"",
       carousel: 2,
       slidePos: 0,
       firstSlide: null,
@@ -178,7 +180,7 @@ export default {
       }, 2000)
     },
     joinRoom() {
-      this.$router.push('room')
+      this.$router.push({name: 'room',  query: { roomId: this.roomId}})
     }
   }
 }

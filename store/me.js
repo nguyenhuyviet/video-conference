@@ -80,9 +80,9 @@ export const mutations = {
   },
 
   setAudioMutedState(state, payload) {
-    const { enabled } = payload
+    const { flag } = payload
 
-    state.audioMuted = enabled
+    state.audioMuted = flag
   },
 
   setRestartIceInProgress(state, payload) {

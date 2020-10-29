@@ -1,7 +1,7 @@
 <template>
   <div id="mediasoup-demo-app-container">
-    <room v-if="!visiblePreMeet"></room>
-    <PreMeet v-if="visiblePreMeet" @joinNow="joinMeetNow()" />
+    <room :display-name="displayName" v-if="!visiblePreMeet"></room>
+    <PreMeet v-if="visiblePreMeet" @joinNow="joinMeetNow" />
   </div>
 </template>
 
@@ -16,13 +16,14 @@ export default {
   },
   data() {
     return {
-      visiblePreMeet: true
+      visiblePreMeet: true,
+      peerId : ""
     }
   },
   methods: {
-    joinMeetNow() {
+    joinMeetNow(obj) {
+      this.displayName = obj.displayName
       this.visiblePreMeet = false
-      console.log('join')
     }
   }
 }

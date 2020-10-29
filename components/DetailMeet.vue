@@ -75,7 +75,7 @@
           <div class="file-item" v-for="file in listFile" :key="file.FileID">
             <div class="file-author">{{ file.AuthorName }}</div>
             <div class="file-name">
-              <a class="mr-3 mb-1 pointer" :href="'https://localhost:4443' + file.url">
+              <a class="mr-3 mb-1 pointer" :href="'https://vidioc.codes/api' + file.url">
                 <font-awesome-icon :icon="['fas', 'download']" />
               </a>
 
@@ -248,7 +248,7 @@ export default {
         let file_name = name_parts.join(".")
         formData.append('file', this.$refs.file.files[0], file_name)
         try {
-          let message = await this.$axios.$post('https://localhost:4443/rooms/share/' + roomId, formData)
+          let message = await this.$axios.$post('https://vidioc.codes/rooms/share/' + roomId, formData)
           await this.roomClient.sendBotMessage("@share /download/" + roomId + "/" + file_name)
         }
         catch (e){

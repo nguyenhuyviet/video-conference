@@ -145,7 +145,7 @@ td {
   color: #C9CED5;
 }
 
-/* 
+/*
 //--------------- button */
 
 .app-btn {
@@ -761,7 +761,7 @@ body {
   #mediasoup-demo-app-container [data-component='Room']>.chat-input-container {
     height: 30px;
     width: 294px;
-    bottom: 275px;
+    bottom: 20px;
     left: 20px;
     border: 1px solid rgba(255, 255, 255, 0.15)
   }
