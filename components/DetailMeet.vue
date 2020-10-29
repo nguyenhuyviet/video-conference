@@ -75,11 +75,11 @@
           <div class="file-item" v-for="file in listFile" :key="file.FileID">
             <div class="file-author">{{ file.AuthorName }}</div>
             <div class="file-name">
-              <div class="mr-3 mb-1 pointer" @click="dowloadFile(file)">
+              <a class="mr-3 mb-1 pointer" :href="'https://localhost:4443' + file.url">
                 <font-awesome-icon :icon="['fas', 'download']" />
-              </div>
+              </a>
 
-              <div class="name" :title="file.FileName">{{ file.FileName }}</div>
+              <div class="name" :title="file.FileName">{{ file.url }}</div>
             </div>
           </div>
         </div>
@@ -139,11 +139,26 @@
 
 <script>
 import fakeAvt from '../assets/images/avt.jpg'
+
+import UrlParse from 'url-parse'
 import { v4 as uuidv4 } from 'uuid'
 export default {
   name: 'DetailMeet',
   props: {
-    tabSelectedProp: Number
+    tabSelectedProp: Number,
+
+    roomClient: {
+      type: Object,
+      required: true
+    }
+  },
+  computed: {
+    listFile() {
+      return this.$store.state.notifications.files
+    },
+    urlParser(){
+      return new UrlParse(window.location.href, true)
+    }
   },
   data() {
     return {
@@ -159,9 +174,6 @@ export default {
           ChatTime: '22:35',
           Value: 'Hello'
         }
-      ],
-      listFile: [
-        
       ],
       listParticipant: [
         {
@@ -187,7 +199,7 @@ export default {
           Name: 'Nguyễn Huy Việt4',
           Avatar: fakeAvt
         },
-        
+
       ],
       loadingMessage: false
     }
@@ -226,24 +238,28 @@ export default {
     //thêm user
     addUser() {},
 
-    handleFileUpload() {
+    async handleFileUpload() {
       if (this.$refs.file.files[0]) {
-        const fileUpload = {
-          FileID: uuidv4(),
-          FileName: this.$refs.file.files[0].name,
-          FileSize: this.$refs.file.files[0].size,
-          FileType: this.$refs.file.files[0].type,
-          AuthorName: 'Nguyễn Huy Việt',
-          AuthorID: uuidv4()
+        let roomId = this.urlParser.query.roomId
+        const formData = new FormData();
+
+        let  name_parts = this.$refs.file.files[0].name.split(".")
+        name_parts[0] = name_parts[0] + "_" + Date.now()
+        let file_name = name_parts.join(".")
+        formData.append('file', this.$refs.file.files[0], file_name)
+        try {
+          let message = await this.$axios.$post('https://localhost:4443/rooms/share/' + roomId, formData)
+          await this.roomClient.sendBotMessage("@share /download/" + roomId + "/" + file_name)
         }
-     
-          this.listFile.push(fileUpload)
-          
-        
-        
+        catch (e){
+          console.log("Error")
+        }
+
       }
     },
-    dowloadFile(file) {}
+    dowloadFile(file) {
+
+    }
   }
 }
 </script>

@@ -1,12 +1,31 @@
 export const state = () => ({
-  notifications: []
+  notifications: [],
+  files: []
 })
+
+const ShareFileMessageRegex = new RegExp('^(.*) "@share (.*)"')
 
 export const mutations = {
   addNotification(state, payload) {
     const notification = payload
 
-    state.notifications.push(notification)
+    let text = payload.text
+    const match = ShareFileMessageRegex.exec(text)
+
+    if (match) {
+      let parts = payload.text.split(" ")
+
+      let url = parts[parts.length-1]
+      url = url.substring(0, url.length-1)
+      let file = {
+        "AuthorName" : parts[0],
+        "url" : url
+      }
+      state.files.push(file)
+    }
+    else{
+      state.notifications.push(notification)
+    }
   },
 
   removeNotification(state, payload) {

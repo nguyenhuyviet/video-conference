@@ -36,7 +36,7 @@
       </div> -->
       <div class="me-button-container">
         <div class="icons flex-a">
-          
+
           <span class="mr-2 pointer flex-c-m icon-28 ml-1">
             <font-awesome-icon :icon="['fas', 'users']" @click="showRightBar(tab.People)" />
           </span>
@@ -87,6 +87,7 @@
         <div class="right-bar" v-if="visibleRightBar">
           <DetailMeet
             :tabSelectedProp="tabSelected"
+            :room-client="roomClient"
             @onHidden="hidenRightBar()"
           />
         </div>

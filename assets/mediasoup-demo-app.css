@@ -145,7 +145,7 @@ td {
   color: #C9CED5;
 }
 
-/* 
+/*
 //--------------- button */
 
 .app-btn {
@@ -889,6 +889,14 @@ body {
 
 #mediasoup-demo-app-container [data-component='Room']>.sidebar>.button.restart-ice {
   background-image: url("data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRkZGRkZGIiBmaWxsLW9wYWNpdHk9IjAuNjUiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgPHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPgogICAgPHBhdGggZD0iTTEgOWwyIDJjNC45Ny00Ljk3IDEzLjAzLTQuOTcgMTggMGwyLTJDMTYuOTMgMi45MyA3LjA4IDIuOTMgMSA5em04IDhsMyAzIDMtM2MtMS42NS0xLjY2LTQuMzQtMS42Ni02IDB6bS00LTRsMiAyYzIuNzYtMi43NiA3LjI0LTIuNzYgMTAgMGwyLTJDMTUuMTQgOS4xNCA4Ljg3IDkuMTQgNSAxM3oiLz4KPC9zdmc+Cg==")
+}
+
+#mediasoup-demo-app-container [data-component='Room'] > .sidebar > .button.share-screen {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRkZGRkZGIiBmaWxsLW9wYWNpdHk9IjAuNSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0ibm9uZSIgZD0iTTAgMGgyNHYyNEgwVjB6Ii8+PHBhdGggZD0iTTIxIDNIM2MtMS4xMSAwLTIgLjg5LTIgMnYxNGMwIDEuMTEuODkgMiAyIDJoMThjMS4xMSAwIDItLjg5IDItMlY1YzAtMS4xMS0uODktMi0yLTJ6bTAgMTYuMDJIM1Y0Ljk4aDE4djE0LjA0ek0xMCAxMkg4bDQtNCA0IDRoLTJ2NGgtNHYtNHoiLz48L3N2Zz4NCg== ")
+}
+
+#mediasoup-demo-app-container [data-component='Room'] > .sidebar > .button.share-screen.on {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDI0djI0SDBWMHoiLz48cGF0aCBkPSJNMjEgM0gzYy0xLjExIDAtMiAuODktMiAydjE0YzAgMS4xMS44OSAyIDIgMmgxOGMxLjExIDAgMi0uODkgMi0yVjVjMC0xLjExLS44OS0yLTItMnptMCAxNi4wMkgzVjQuOThoMTh2MTQuMDR6TTEwIDEySDhsNC00IDQgNGgtMnY0aC00di00eiIvPjwvc3ZnPg0K")
 }
 
 @-moz-keyframes Room-info-state-connecting {
