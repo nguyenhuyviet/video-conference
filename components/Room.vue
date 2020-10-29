@@ -36,9 +36,11 @@
       </div> -->
       <div class="me-button-container">
         <div class="icons flex-a">
-
           <span class="mr-2 pointer flex-c-m icon-28 ml-1">
-            <font-awesome-icon :icon="['fas', 'users']" @click="showRightBar(tab.People)" />
+            <font-awesome-icon
+              :icon="['fas', 'users']"
+              @click="showRightBar(tab.People)"
+            />
           </span>
           <!-- <span class="mr-2 pointer flex-c-m icon-28 ">
             <font-awesome-icon
@@ -54,34 +56,49 @@
           </span>
         </div>
       </div>
-
       <div class="sidebar">
         <div
-          class="button hide-videos"
+          class="button hide-videos flex-c-m"
           :class="{
-            on: me.audioOnly,
+            'not-available': me.audioOnly,
             disabled: me.audioOnlyInProgress
           }"
           title="Show/hide participants video"
           @click="toggleParticipantsVideo"
-        />
+        >
+          <font-awesome-icon :icon="['fas', 'video']" />
+        </div>
 
         <div
-          class="button mute-audio"
-          :class="{ on: me.audioMuted }"
+          class="button mute-audio  flex-c-m"
+          :class="{ 'not-available': me.audioMuted }"
           title="Mute/unmute participants audio"
           @click="toggleMute"
-        />
-
-        <!-- <div
-          class="button restart-ice"
+        >
+          <font-awesome-icon :icon="['fas', 'microphone']" />
+        </div>
+        <div
+          class="button share-screen  flex-c-m"
+          title="Share screen"
           :class="{
-            disabled: me.restartIceInProgress
+            shareState,
+            disabled: me.shareInProgress || me.webcamInProgress
           }"
-          title="Restart ICE"
-          @click="roomClient.restartIce()"
-        /> -->
+          @click="toggleShare"
+        >
+          <font-awesome-icon :icon="['fas', 'share']" />
+        </div>
+        <!--        <div-->
+        <!--          class="button restart-ice"-->
+        <!--          :class="{-->
+        <!--            disabled: me.restartIceInProgress-->
+        <!--          }"-->
+        <!--          title="Restart ICE"-->
+        <!--          @click="roomClient.restartIce()"-->
+        <!--        />-->
       </div>
+      <Stats v-if="roomClientReady" :room-client="roomClient" />
+
       <!-- right bar -->
       <transition name="slide">
         <div class="right-bar" v-if="visibleRightBar">
@@ -108,6 +125,8 @@ import clipboardCopy from 'clipboard-copy'
 import UrlParse from 'url-parse'
 import Notifications from '~/components/Notifications'
 import NetworkThrottle from '~/components/NetworkThrottle'
+import Stats from '~/components/Stats'
+
 import DetailMeet from '~/components/DetailMeet'
 import ChatInput from '~/components/ChatInput'
 import Me from '~/components/Me'
@@ -126,7 +145,8 @@ export default {
     ChatInput,
     Me,
     Peers,
-    DetailMeet
+    DetailMeet,
+    Stats
   },
   data() {
     return {
@@ -135,7 +155,7 @@ export default {
       tab: {
         Chat: 1,
         People: 2,
-        File: 3,
+        File: 3
       },
       tabSelected: null,
       visibleRightBar: false,
@@ -152,6 +172,13 @@ export default {
     },
     room() {
       return this.$store.state.room
+    },
+    shareState() {
+      if (Boolean(this.videoProducer) && this.videoProducer.type === 'share') {
+        return 'on'
+      } else {
+        return 'off'
+      }
     }
   },
   mounted() {
@@ -264,7 +291,13 @@ export default {
         ? this.roomClient.disableAudioOnly()
         : this.roomClient.enableAudioOnly()
     },
-
+    toggleShare() {
+      if (this.shareState === 'on') {
+        this.roomClient.disableShare()
+      } else {
+        this.roomClient.enableShare()
+      }
+    },
     toggleMute() {
       this.me.audioMuted
         ? this.roomClient.unmuteAudio()
