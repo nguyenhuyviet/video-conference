@@ -27,11 +27,13 @@ export const mutations = {
   },
 
   setMe(state, payload) {
-    const { peerId, displayName, displayNameSet, device } = payload
+    const { peerId, displayName, displayNameSet, device, disableAudio, disableWebcam } = payload
     state.id = peerId
     state.displayName = displayName
     state.displayNameSet = displayNameSet
     state.device = device
+    state.audioOnly = disableWebcam
+    state.audioMuted = disableAudio
   },
 
   setMediaCapabilities(state, payload) {

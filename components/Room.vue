@@ -151,7 +151,14 @@ export default {
   props: { displayName: {
       type: String,
       required: true
-    }},
+    },
+    disableAudio :{
+      type: Boolean
+    },
+    disableWebcam :{
+      type: Boolean
+    }
+  },
   components: {
     Notifications,
     NetworkThrottle,
@@ -194,7 +201,7 @@ export default {
       }
     }
   },
-  mounted() {
+  async mounted() {
     const urlParser = new UrlParse(window.location.href, true)
 
     const peerId = randomString(8).toLowerCase()
@@ -202,7 +209,6 @@ export default {
     let roomId = urlParser.query.roomId
     let displayName = this.displayName
 
-    console.log(displayName)
     const handler = urlParser.query.handler
     const useSimulcast = urlParser.query.simulcast !== 'false'
     const useSharingSimulcast = urlParser.query.sharingSimulcast !== 'false'
@@ -264,15 +270,22 @@ export default {
     // Get current device info.
     const device = deviceInfo()
 
-    this.$store.commit('room/setRoomUrl', { roomUrl })
+    this.$store.commit('room/setRoomUrl', { url: roomUrl })
 
     this.$store.commit('room/setFaceDetection', { flag: faceDetection })
+
+
+    let disableAudio = this.disableAudio
+    let disableWebcam = this.disableWebcam
+
 
     this.$store.commit('me/setMe', {
       peerId,
       displayName,
       displayNameSet,
-      device
+      device,
+      disableAudio,
+      disableWebcam
     })
 
     this.roomClient = new RoomClient({
@@ -292,12 +305,15 @@ export default {
       datachannel,
       externalVideo,
 
-      store: this.$store
+      store: this.$store,
+      disableAudio,
+      disableWebcam
     })
 
-    this.roomClient.join()
+    await this.roomClient.join()
 
     this.roomClientReady = true
+
   },
   methods: {
     toggleParticipantsVideo() {
@@ -331,7 +347,6 @@ export default {
       }
 
       event.preventDefault()
-
       clipboardCopy(this.room.url).then(
         this.$store.dispatch('notify', {
           text: 'Room link copied to the clipboard'

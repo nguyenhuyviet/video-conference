@@ -1,6 +1,6 @@
 <template>
   <div id="mediasoup-demo-app-container">
-    <room :display-name="displayName" v-if="!visiblePreMeet"></room>
+    <room :display-name="displayName" :disable-audio="disableAudio" :disable-webcam="disableWebcam" v-if="!visiblePreMeet"></room>
     <PreMeet v-if="visiblePreMeet" @joinNow="joinMeetNow" />
   </div>
 </template>
@@ -17,12 +17,21 @@ export default {
   data() {
     return {
       visiblePreMeet: true,
-      peerId : ""
+      peerId : "",
+      displayName : "",
+      disableAudio : false,
+      disableWebcam : false,
+
     }
   },
   methods: {
     joinMeetNow(obj) {
       this.displayName = obj.displayName
+
+      this.disableAudio = !obj.useMicro
+
+      this.disableWebcam = !obj.useCamera
+
       this.visiblePreMeet = false
     }
   }

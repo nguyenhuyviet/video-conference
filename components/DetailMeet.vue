@@ -50,12 +50,12 @@
           <div
             class="user-item"
             v-for="user in listParticipant"
-            :key="user.UserID"
+            :key="user.id"
           >
             <div class="avt flex-c-m">
-              <img :src="user.Avatar" alt="" />
+              <img :src="avatar" alt="" />
             </div>
-            <div class="full-name">{{ user.Name }}</div>
+            <div class="full-name">{{ user.displayName }}</div>
           </div>
         </div>
       </div>
@@ -75,7 +75,7 @@
           <div class="file-item" v-for="file in listFile" :key="file.FileID">
             <div class="file-author">{{ file.AuthorName }}</div>
             <div class="file-name">
-              <a class="mr-3 mb-1 pointer" :href="'https://vidioc.codes/api' + file.url">
+              <a class="mr-3 mb-1 pointer" :href="'https://' + this.hostname + '/api' + file.url">
                 <font-awesome-icon :icon="['fas', 'download']" />
               </a>
 
@@ -140,6 +140,7 @@
 <script>
 import fakeAvt from '../assets/images/avt.jpg'
 
+import { hostname } from '~/utils/urlFactory'
 import UrlParse from 'url-parse'
 import { v4 as uuidv4 } from 'uuid'
 export default {
@@ -158,10 +159,17 @@ export default {
     },
     urlParser(){
       return new UrlParse(window.location.href, true)
+    },
+    listParticipant() {
+      let peers = JSON.parse(JSON.stringify(this.$store.state.peers.peers))
+      peers.push({  id: this.$store.state.me.id, displayName: this.$store.state.me.displayName })
+      return peers
     }
   },
   data() {
     return {
+      avatar : fakeAvt,
+      hostname: hostname,
       tab: {
         Chat: 1,
         People: 2,
@@ -174,32 +182,6 @@ export default {
           ChatTime: '22:35',
           Value: 'Hello'
         }
-      ],
-      listParticipant: [
-        {
-          UserID: 1,
-          Name: 'Nguyễn Huy Việt1',
-          Avatar: fakeAvt
-        },
-        {
-          UserID: 11,
-
-          Name: 'Nguyễn Huy Việt2',
-          Avatar: fakeAvt
-        },
-        {
-          UserID: 111,
-
-          Name: 'Nguyễn Huy Việt3',
-          Avatar: fakeAvt
-        },
-        {
-          UserID: 1111,
-
-          Name: 'Nguyễn Huy Việt4',
-          Avatar: fakeAvt
-        },
-
       ],
       loadingMessage: false
     }
@@ -245,10 +227,10 @@ export default {
 
         let  name_parts = this.$refs.file.files[0].name.split(".")
         name_parts[0] = name_parts[0] + "_" + Date.now()
-        let file_name = name_parts.join(".")
+        let file_name = name_parts.join(".").replaceAll(" ", "_")
         formData.append('file', this.$refs.file.files[0], file_name)
         try {
-          let message = await this.$axios.$post('https://vidioc.codes/rooms/share/' + roomId, formData)
+          let message = await this.$axios.$post('https://' + this.hostname + '/rooms/share/' + roomId, formData)
           await this.roomClient.sendBotMessage("@share /download/" + roomId + "/" + file_name)
         }
         catch (e){

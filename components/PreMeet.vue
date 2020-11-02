@@ -24,17 +24,17 @@
                 </div>
                 <div class="mb-3">
                   <v-checkbox
-                    v-model="useMicro"
+                    v-model="devices"
                     :label="`Sử dụng micro`"
                     color="primary"
-                    value="primary"
+                    value="audio"
                     hide-details
                   ></v-checkbox>
                   <v-checkbox
-                    v-model="useCamera"
+                    v-model="devices"
                     :label="`Sử dụng Camera`"
                     color="primary"
-                    value="primary"
+                    value="camera"
                     hide-details
                   ></v-checkbox>
                 </div>
@@ -87,20 +87,20 @@ export default {
   props: {},
   data() {
     return {
-      useMicro: true,
-      useCamera: true,
+      devices : ["audio", "camera"],
       displayName: ''
     }
   },
   methods: {
     joinMeetNow() {
       this.$refs.observer.validate().then((result) => {
-        if (result == true) {
+        if (result === true) {
           const obj = {
             displayName: this.displayName,
-            useMicro: this.useMicro,
-            useCamera: this.useCamera
+            useMicro: this.devices.includes("audio"),
+            useCamera: this.devices.includes("camera")
           }
+
           this.$emit('joinNow', obj)
         }
       })

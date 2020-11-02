@@ -44,7 +44,9 @@ export default class RoomClient {
     svc,
     datachannel,
     externalVideo,
-    store
+    store,
+    disableAudio,
+    disableWebcam
   }) {
     console.debug(
       'constructor() [roomId:"%s", peerId:"%s", displayName:"%s", device:%s]',
@@ -189,6 +191,10 @@ export default class RoomClient {
       VIDEO_SVC_ENCODINGS[0].scalabilityMode = svc
       VIDEO_KSVC_ENCODINGS[0].scalabilityMode = `${svc}_KEY`
     }
+
+    this._disableAudio = disableAudio
+
+    this._disableWebcam = disableWebcam
   }
 
   close() {
@@ -450,6 +456,8 @@ export default class RoomClient {
               switch (dataConsumer.label) {
                 case 'chat': {
                   const { peers } = this.store.state
+                  console.log(peers)
+
                   let peersArray = Object.keys(peers).map(
                     (_peerId) => peers[_peerId]
                   )
@@ -2067,7 +2075,12 @@ export default class RoomClient {
           canSendWebcam: this._mediasoupDevice.canProduce('video')
         })
 
-        this.enableMic()
+        if (this._disableAudio){
+          this.disableMic()
+        }
+      else{
+          this.enableMic()
+        }
 
         const devicesCookie = cookiesManager.getDevices()
 
@@ -2075,8 +2088,14 @@ export default class RoomClient {
           !devicesCookie ||
           devicesCookie.webcamEnabled ||
           this._externalVideo
-        )
-          this.enableWebcam()
+        ){
+          if (this._disableWebcam){
+            this.disableWebcam()
+          }
+          else{
+            this.enableWebcam()
+          }
+        }
 
         this._sendTransport.on('connectionstatechange', (connectionState) => {
           if (connectionState === 'connected') {
