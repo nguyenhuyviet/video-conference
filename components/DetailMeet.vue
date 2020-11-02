@@ -75,7 +75,7 @@
           <div class="file-item" v-for="file in listFile" :key="file.FileID">
             <div class="file-author">{{ file.AuthorName }}</div>
             <div class="file-name">
-              <a class="mr-3 mb-1 pointer" :href="'https://' + this.hostname + '/api' + file.url">
+              <a class="mr-3 mb-1 pointer" :href="'https://' + this.hostname + file.url">
                 <font-awesome-icon :icon="['fas', 'download']" />
               </a>
 
@@ -230,7 +230,8 @@ export default {
         let file_name = name_parts.join(".").replaceAll(" ", "_")
         formData.append('file', this.$refs.file.files[0], file_name)
         try {
-          let message = await this.$axios.$post('https://' + this.hostname + '/rooms/share/' + roomId, formData)
+          let hostname = this.hostname
+          let message = await this.$axios.$post('https://' + hostname + '/rooms/share/' + roomId, formData)
           await this.roomClient.sendBotMessage("@share /download/" + roomId + "/" + file_name)
         }
         catch (e){
