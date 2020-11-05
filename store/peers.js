@@ -1,5 +1,63 @@
 export const state = () => ({
-  peers: []
+  peers: [
+    // {
+  //   id: "123123",
+  //   displayName: "abc",
+  //   consumers: []
+  // },
+  // {
+  //   id: "123123",
+  //   displayName: "abc",
+  //   consumers: []
+  // },
+  // {
+  //   id: "123123",
+  //   displayName: "abc",
+  //   consumers: []
+  // }, {
+  //   id: "123123",
+  //   displayName: "abc",
+  //   consumers: []
+  // },
+  // {
+  //   id: "123123",
+  //   displayName: "abc",
+  //   consumers: []
+  // },
+  // {
+  //   id: "123123",
+  //   displayName: "abc",
+  //   consumers: []
+  // }, {
+  //   id: "123123",
+  //   displayName: "abc",
+  //   consumers: []
+  // },
+  // {
+  //   id: "123123",
+  //   displayName: "abc",
+  //   consumers: []
+  // },
+  // {
+  //   id: "123123",
+  //   displayName: "abc",
+  //   consumers: []
+  // }, {
+  //   id: "123123",
+  //   displayName: "abc",
+  //   consumers: []
+  // },
+  // {
+  //   id: "123123",
+  //   displayName: "abc",
+  //   consumers: []
+  // },
+  // {
+  //   id: "123123",
+  //   displayName: "abc",
+  //   consumers: []
+  // }
+  ]
 })
 
 export const mutations = {

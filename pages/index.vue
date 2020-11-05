@@ -87,9 +87,13 @@
 import slide_0 from '../assets/images/slide1.jpg'
 import slide_1 from '../assets/images/slide2.jpg'
 import slide_2 from '../assets/images/slide3.jpg'
+import resize from 'vue-resize-directive'
 
 export default {
   name: 'Home',
+   directives: {
+        resize,
+    },
   components: {},
   data() {
     return {
