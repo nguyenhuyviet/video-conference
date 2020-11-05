@@ -199,6 +199,11 @@
             {{ _printConsumerScore(videoConsumerId, videoScore) }}
           </div>
         </div>
+        <div class="infor-user" style="color: #fff">
+          <h1>Tên: {{user.name}}</h1>
+          <h1>Lớp: {{user.class}}</h1>
+          <h1>MSSV: {{user.ID}}</h1>
+        </div>
       </div>
 
       <div class="peer" :class="{ 'is-me': isMe }">
@@ -293,7 +298,11 @@ export default {
       p_audioTrack: null,
       videoResolutionPeriodicTimer: null,
       faceDetectionRequestAnimationFrame: null,
-     
+     user:{
+       name:"Nguyễn Tuấn Ngọc",
+       class:"K62-CC",
+       ID:"17020934"
+     }
     }
   },
   computed: {

@@ -52,8 +52,9 @@
               type="text"
               placeholder="Nhập vào một mã"
               v-model="roomId"
+              v-on:keyup.enter="joinRoom()"
             />
-            <button class="btn-join" @click="joinRoom()">
+            <button class="btn-join" @click="joinRoom()" >
               <font-awesome-icon :icon="['fa', 'arrow-right']" />
             </button>
             <div class="icon-keyboard">

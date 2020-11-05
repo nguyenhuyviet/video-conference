@@ -9,8 +9,8 @@
           v-bind:class="{ 'tab-active': tabSelected == tab.People }"
           @click="tabSelected = tab.People"
         >
-          <span class="mr-2">
-            <font-awesome-icon :icon="['fas', 'user']" />
+          <span class="mr-2" >
+            <font-awesome-icon :icon="['fas', 'user']"  />
           </span>
           Mọi người ({{ listParticipant.length }})
         </div>
@@ -39,13 +39,13 @@
     <div class="content-tab">
       <!-- tab người tham gia -->
       <div class="people-tab" v-if="tabSelected == tab.People">
-        <div class="add-user" @click="addUser()">
+        <!-- <div class="add-user" @click="addUser()">
           <div class="item-circle flex-c-m">
             <font-awesome-icon :icon="['fas', 'user-plus']" />
           </div>
 
-          <div style="font-size: 14px">Thêm người</div>
-        </div>
+          <div style="font-size: 14px">Thêm người</div> -->
+        <!-- </div> -->
         <div class="list-user">
           <div
             class="user-item"

@@ -36,7 +36,7 @@
       </div>
       <div class="me-button-container">
         <div class="icons flex-a">
-          <span class="mr-2 pointer flex-c-m icon-28 ml-1">
+          <span class="mr-2 pointer flex-c-m icon-28 ml-1" title="Mọi người">
             <font-awesome-icon
               :icon="['fas', 'users']"
               @click="showRightBar(tab.People)"
@@ -48,13 +48,13 @@
               @click="showRightBar(tab.Chat)"
             />
           </span> -->
-          <span class="mr-2 pointer flex-c-m icon-28 ">
+          <span class="mr-2 pointer flex-c-m icon-28 " title="Tệp tin">
             <font-awesome-icon
               :icon="['fas', 'file']"
               @click="showRightBar(tab.File)"
             />
           </span>
-          <span class="mr-2 pointer flex-c-m icon-28 ">
+          <span class="mr-2 pointer flex-c-m icon-28 " title="Sao chép phòng">
             <font-awesome-icon
               :icon="['fas', 'clone']"
                @click="onInvitationLinkClick"
@@ -416,5 +416,10 @@ export default {
 
 .slide-enter {
   transform: translate(100%);
+}
+.tooltip{
+  background-color: #c5221f;
+  height: 10px;
+  width: 210px;
 }
 </style>
