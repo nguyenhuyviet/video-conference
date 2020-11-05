@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width: 100%">
     <div class="indicators">
       <div v-if="!audioEnabled" class="icon mic-off" />
 

@@ -434,7 +434,7 @@ body {
 
 #mediasoup-demo-app-container [data-component='Room'] {
   position: relative;
-  height: 100%;
+  height: 100vh;
   width: 100%;
   will-change: opacity;
 }
@@ -1135,7 +1135,7 @@ body {
 @media (min-device-width: 721px) {
   #mediasoup-demo-app-container [data-component='Peers'] {
     width: 100%;
-    padding: 40px 0 220px 0;
+    padding: 40px 0 40px 0;
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -1753,7 +1753,7 @@ body {
   }
 
   #mediasoup-demo-app-container [data-component='PeerView']>.info>.peer:not(.is-me) {
-    padding: 20px;
+    padding: 8px;
     -webkit-box-align: start;
     -moz-box-align: start;
     -o-box-align: start;
@@ -1786,7 +1786,7 @@ body {
   }
 }
 
-#mediasoup-demo-app-container [data-component='PeerView']>.info>.peer>.display-name {
+#mediasoup-demo-app-container [data-component='PeerView']>.info>.peer .display-name {
   font-size: 14px;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.85)

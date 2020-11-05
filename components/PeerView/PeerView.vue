@@ -1,5 +1,5 @@
 <template>
-  <div data-component="PeerView">
+  <div data-component="PeerView" >
     <div class="info">
       <div class="icons">
           <div
