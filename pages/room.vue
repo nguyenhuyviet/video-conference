@@ -16,7 +16,7 @@ export default {
   },
   data() {
     return {
-      visiblePreMeet: true,
+      visiblePreMeet: false,
       peerId : "",
       displayName : "",
       disableAudio : false,

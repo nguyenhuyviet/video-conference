@@ -1,14 +1,27 @@
 <template>
-  <div data-component="PeerView" >
+  <div data-component="PeerView">
     <div class="info">
       <div class="icons">
+        <div
+          class="icon info mr-2"
+          :class="{ on: showInfo }"
+          @click="showInfo = !showInfo"
+        />
+
+        <div
+          class="button record-screen  flex-c-m mr-3"
+          title="Ghi màn hình"
+          @click="handleRecording()"
+          v-if="!isMe && ( peer.id == idRecord  || me.isRecording == false)"
+        >
           <div
-            class="icon info mr-2"
-            :class="{ on: showInfo }"
-            @click="showInfo = !showInfo"
-          />
-         
+            class="circle"
+            :class="{
+              'stop-record': isRecording
+            }"
+          ></div>
         </div>
+      </div>
 
       <div class="box" :class="{ visible: showInfo }">
         <div v-if="audioProducerId || audioConsumerId">
@@ -200,9 +213,9 @@
           </div>
         </div>
         <div class="infor-user" style="color: #fff">
-          <h1>Tên: {{user.name}}</h1>
-          <h1>Lớp: {{user.class}}</h1>
-          <h1>MSSV: {{user.ID}}</h1>
+          <h1>Tên: {{ user.name }}</h1>
+          <h1>Lớp: {{ user.class }}</h1>
+          <h1>MSSV: {{ user.ID }}</h1>
         </div>
       </div>
 
@@ -251,6 +264,7 @@
       autoPlay
       muted
       :controls="false"
+      :id="isMe ? 'is-me' : `user-${peer.id}`"
     />
 
     <audio ref="audioElem" autoPlay muted :controls="false" />
@@ -281,6 +295,7 @@
 <script>
 import hark from 'hark'
 import peerViewProps from '~/components/PeerView/PeerViewProps'
+import RecordRTC from 'recordrtc'
 export default {
   props: peerViewProps,
   data() {
@@ -298,11 +313,14 @@ export default {
       p_audioTrack: null,
       videoResolutionPeriodicTimer: null,
       faceDetectionRequestAnimationFrame: null,
-     user:{
-       name:"Nguyễn Tuấn Ngọc",
-       class:"K62-CC",
-       ID:"17020934"
-     }
+      user: {
+        name: 'Nguyễn Tuấn Ngọc',
+        class: 'K62-CC',
+        ID: '17020934'
+      },
+
+      isRecording: this.$store.state.me.isRecording,
+      idRecord: null
     }
   },
   computed: {
@@ -351,6 +369,55 @@ export default {
     })
   },
   methods: {
+    handleRecording() {
+      this.isRecording = !this.isRecording
+
+      this.$store.commit('me/setRecording', {
+        flag: this.isRecording
+      })
+
+      if (this.isRecording) {
+        this.startRecording()
+      } else {
+        this.stopRecording()
+      }
+    },
+
+    startRecording() {
+      // this.$store.commit('me/setRecordingID', {
+      //   flag: this.peer.id
+      // })
+
+      this.idRecord =  this.peer.id;
+
+      console.log(`1.isRecording: ${this.isRecording} - idRecord: ${this.idRecord} - peerID: ${this.peer.id}`);
+
+      const videoID = `user-${this.peer.id}`
+      let playbackElement = document.getElementById(videoID)
+      let captureStream = playbackElement.captureStream()
+      let options = {
+        mimeType: 'video/mp4',
+        audioBitsPerSecond: 128000,
+        videoBitsPerSecond: 512000,
+        bitsPerSecond: 512000
+      }
+
+      this.recordRTC = RecordRTC(captureStream, options)
+      this.recordRTC.startRecording()
+    },
+
+    stopRecording() {
+      // this.$store.commit('me/setRecordingID', {
+      //   flag: null
+      // })
+      this.idRecord =  -1111;
+      console.log(`2. isRecording: ${this.isRecording} - idRecord: ${this.idRecord} - peerID: ${this.peer.id}`);
+      var recordedBlob = this.recordRTC.getBlob()
+      this.recordRTC.stopRecording((Blob) => {
+        this.recordRTC.save('video.mp4')
+      })
+    },
+
     _updateTracks(audioTrack, videoTrack) {
       if (
         this.isMe &&
@@ -565,3 +632,34 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.record-screen {
+  .circle {
+    border: solid 1px;
+    width: 22px;
+    position: relative;
+    height: 22px;
+    color: #ffffff;
+    cursor: pointer;
+  }
+  .circle::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: #ffffff;
+    border-radius: 50%;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+  }
+  .stop-record::after {
+    width: 10px;
+    height: 10px;
+    background: #c5221f;
+    position: absolute;
+    z-index: 1;
+    border-radius: 2px;
+  }
+}
+</style>

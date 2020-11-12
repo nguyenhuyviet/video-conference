@@ -11,7 +11,9 @@ export const state = () => ({
   audioOnly: false,
   audioOnlyInProgress: false,
   audioMuted: false,
-  restartIceInProgress: false
+  restartIceInProgress: false,
+  isRecording: false,
+  recordingID: null,
 })
 
 export const mutations = {
@@ -91,5 +93,17 @@ export const mutations = {
     const { flag } = payload
 
     state.restartIceInProgress = flag
+  },
+
+  setRecording(state, payload) {
+    const { flag } = payload
+
+    state.isRecording = flag
+  }
+  ,
+  setRecordingID(state, payload) {
+    const { flag } = payload
+
+    state.recordingID = flag
   }
 }

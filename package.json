@@ -27,6 +27,7 @@
     "nuxt-stylus-resources-loader": "^2.0.0",
     "pokemon": "^2.0.2",
     "protoo-client": "^4.0.4",
+    "recordrtc": "^5.6.1",
     "url-parse": "^1.4.7",
     "uuid": "^8.3.1",
     "vee-validate": "^3.4.3",

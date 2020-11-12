@@ -21,7 +21,6 @@
           </a>
         </div>
       </div> -->
-
       <Peers v-if="roomClientReady" :room-client="roomClient" />
 
       <div class="me-container" :class="{ 'active-speaker': amActiveSpeaker }">
@@ -57,7 +56,7 @@
           <span class="mr-2 pointer flex-c-m icon-28 " title="Sao chép phòng">
             <font-awesome-icon
               :icon="['fas', 'clone']"
-               @click="onInvitationLinkClick"
+              @click="onInvitationLinkClick"
             />
           </span>
         </div>
@@ -94,9 +93,16 @@
         >
           <font-awesome-icon :icon="['fas', 'share']" />
         </div>
-        <div class="button share-screen stop-call  flex-c-m" title="Thoát" @click="stopCall">
+
+ 
+        <div
+          class="button share-screen stop-call  flex-c-m"
+          title="Thoát"
+          @click="stopCall"
+        >
           <font-awesome-icon :icon="['fas', 'phone']" />
         </div>
+
         <!--        <div-->
         <!--          class="button restart-ice"-->
         <!--          :class="{-->
@@ -147,15 +153,18 @@ import deviceInfo from '~/utils/deviceInfo'
 import randomString from '~/utils/randomString'
 import randomName from '~/utils/randomName'
 
+import RecordRTC from 'recordrtc'
+
 export default {
-  props: { displayName: {
+  props: {
+    displayName: {
       type: String,
       required: true
     },
-    disableAudio :{
+    disableAudio: {
       type: Boolean
     },
-    disableWebcam :{
+    disableWebcam: {
       type: Boolean
     }
   },
@@ -179,6 +188,10 @@ export default {
       },
       tabSelected: null,
       visibleRightBar: false,
+
+      isRecording: false,
+      recordRTC: null,
+      stream: null,
 
       NETWORK_THROTTLE_SECRET: window.NETWORK_THROTTLE_SECRET
     }
@@ -274,10 +287,8 @@ export default {
 
     this.$store.commit('room/setFaceDetection', { flag: faceDetection })
 
-
     let disableAudio = this.disableAudio
     let disableWebcam = this.disableWebcam
-
 
     this.$store.commit('me/setMe', {
       peerId,
@@ -313,9 +324,48 @@ export default {
     await this.roomClient.join()
 
     this.roomClientReady = true
-
   },
   methods: {
+    handleRecording() {
+      this.isRecording = !this.isRecording
+
+      if (this.isRecording) {
+        this.startRecording()
+      } else {
+        this.stopRecording()
+      }
+    },
+
+    startRecording() {
+      let playbackElement = document.getElementById('hellooooo')
+      playbackElement.play()
+      let captureStream = playbackElement.captureStream()
+      let options = {
+        mimeType: 'video/mp4',
+        audioBitsPerSecond: 128000,
+        videoBitsPerSecond: 512000,
+        bitsPerSecond: 512000
+      }
+
+      this.recordRTC = RecordRTC(captureStream, options)
+      this.recordRTC.startRecording()
+      let videoElm = document.getElementById('preview-video')
+      videoElm.srcObject = captureStream
+      videoElm.play()
+    },
+
+    stopRecording() {
+
+      var recordedBlob = this.recordRTC.getBlob();
+      this.recordRTC.stopRecording( (Blob)=> {
+         this.recordRTC.save('video.mp4');
+      })
+      
+      this.recordRTC.getDataURL(function(dataURL) {
+        
+      })
+    },
+
     toggleParticipantsVideo() {
       this.me.audioOnly
         ? this.roomClient.disableAudioOnly()
@@ -360,7 +410,7 @@ export default {
     hidenRightBar() {
       this.visibleRightBar = false
     },
-    stopCall(){
+    stopCall() {
       this.$router.push('/')
     }
   }
@@ -368,6 +418,33 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.record-screen {
+  .circle {
+    border: solid 1px;
+    width: 22px;
+    position: relative;
+    height: 22px;
+  }
+  .circle::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: #ffffff;
+    border-radius: 50%;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+  }
+  .stop-record::after {
+    width: 10px;
+    height: 10px;
+    background: #c5221f;
+    position: absolute;
+    z-index: 1;
+    border-radius: 2px;
+  }
+}
+
 .stop-call {
   transform: rotate(-135deg);
   background-color: #c5221f !important;
@@ -417,7 +494,7 @@ export default {
 .slide-enter {
   transform: translate(100%);
 }
-.tooltip{
+.tooltip {
   background-color: #c5221f;
   height: 10px;
   width: 210px;

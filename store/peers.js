@@ -1,7 +1,12 @@
 export const state = () => ({
   peers: [
-    // {
-  //   id: "123123",
+  //   {
+  //   id: "1",
+  //   displayName: "abc",
+  //   consumers: []
+  // },
+  // {
+  //   id: "2",
   //   displayName: "abc",
   //   consumers: []
   // },
