@@ -1,8 +1,8 @@
 let protooPort = 4443
+
 const hostname = 'localhost' // window.location.hostname
 
 function getProtooUrl({ roomId, peerId, forceH264, forceVP9 }) {
-
   let url = `wss://${hostname}:${protooPort}/?roomId=${roomId}&peerId=${peerId}`
 
   if (forceH264) url = `${url}&forceH264=true`
@@ -11,7 +11,7 @@ function getProtooUrl({ roomId, peerId, forceH264, forceVP9 }) {
   return url
 }
 
-export{
+export {
   hostname,
   getProtooUrl
 }
