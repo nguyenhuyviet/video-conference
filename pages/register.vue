@@ -1,9 +1,9 @@
 <template>
   <v-app>
-    <div class="login-component">
+    <div class="register-component">
       <div class="container content">
         <div class="box align-items-center justify-content-center">
-          <div class="login-title">Đăng nhập hệ thống</div>
+          <div class="login-title">Đăng ký tài khoản</div>
           <span v-if="message" class="invalid-msg">{{ message }}</span>
           <validation-observer ref="observer" v-slot="{ invalid }">
             <form @submit.prevent="login">
@@ -23,18 +23,72 @@
                     ></v-text-field>
                   </validation-provider>
                 </div>
-                <div class="mb-6">
+                <div class="mb-6 mt-6">
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Họ và tên"
+                    rules="required|max:50"
+                  >
+                    <v-text-field
+                      label="Nhập họ và tên"
+                      :error-messages="errors"
+                      hide-details="auto"
+                      v-model="fullName"
+                      required
+                    ></v-text-field>
+                  </validation-provider>
+                </div>
+                <div class="mb-6 mt-6">
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Email"
+                    rules="required|max:50|email"
+                  >
+                    <v-text-field
+                      label="Nhập email"
+                      :error-messages="errors"
+                      hide-details="auto"
+                      v-model="email"
+                      required
+                    ></v-text-field>
+                  </validation-provider>
+                </div>
+                <div class="mb-6 mt-6">
                   <validation-provider
                     v-slot="{ errors }"
                     name="Mật khẩu"
                     rules="required|min:6"
                   >
                     <v-text-field
+                      :append-icon="showP ? 'mdi-eye' : 'mdi-eye-off'"
+                      :type="showP ? 'text' : 'password'"
                       label="Nhập mật khẩu"
-                      :error-messages="errors"
-                      hide-details="auto"
+                      hint="Ít nhất 6 ký tự"
                       v-model="passWord"
+                      :error-messages="errors"
                       required
+                      ref="password"
+                      @click:append="showP = !showP"
+                    ></v-text-field>
+                  
+                  </validation-provider>
+                </div>
+                <div class="mb-6">
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Nhập lại mật khẩu"
+                    rules="required|min:6|confirmed:password"
+                  >
+                    <v-text-field
+                      :append-icon="showRe ? 'mdi-eye' : 'mdi-eye-off'"
+                      :type="showRe ? 'text' : 'password'"
+                      name="input-10-2"
+                      label="Nhập lại mật khẩu"
+                      hint="Ít nhất 6 ký tự"
+                      v-model="rePassWord"
+                      :error-messages="errors"
+                      required
+                      @click:append="showRe = !showRe"
                     ></v-text-field>
                   </validation-provider>
                 </div>
@@ -46,14 +100,15 @@
                   :disabled="invalid"
                   :loading="isLogin"
                 >
-                  Đăng nhập
+                  Đăng ký
                 </v-btn>
               </div>
             </form>
           </validation-observer>
 
           <div class="bottom">
-            Chưa có tài khoản <router-link class="ml-1" to="/register">Đăng ký</router-link>
+            Đã có tài khoản
+            <router-link class="ml-1" to="/login">Đăng nhập</router-link>
           </div>
         </div>
       </div>
@@ -64,7 +119,7 @@
 <script>
 import axios from 'axios'
 
-import { required, email, max, min } from 'vee-validate/dist/rules'
+import { required, email, max, min,confirmed } from 'vee-validate/dist/rules'
 import {
   extend,
   ValidationObserver,
@@ -89,7 +144,15 @@ extend('min', {
   ...min,
   message: '{_field_} phải nhiều hơn {length} ký tự',
 })
+extend('email', {
+  ...email,
+  message: 'Email phải đúng định dạng',
+})
 
+extend('confirmed', {
+  ...confirmed,
+  message: 'Mật khẩu không khớp',
+})
 export default {
   name: 'PreMeet',
   components: {
@@ -101,8 +164,13 @@ export default {
     return {
       userName: '',
       passWord: '',
+      fullName: '',
+      email: '',
+      rePassWord: '',
       isLogin: false,
       message: '',
+      showP: false,
+      showRe: false,
     }
   },
   methods: {
@@ -138,7 +206,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-.login-component {
+.register-component {
   height: 100vh;
   width: 100vw;
   background: url('../assets/images/login.jpg');
@@ -166,11 +234,9 @@ export default {
       .bottom {
         font-size: 14px;
         font-weight: 500;
-
-        margin-top: 12px;
-
         display: flex;
         justify-content: flex-end;
+        margin-top: 12px;
       }
     }
   }
