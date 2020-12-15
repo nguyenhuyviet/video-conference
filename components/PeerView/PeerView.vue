@@ -5,19 +5,20 @@
         <div
           class="icon info mr-2"
           :class="{ on: showInfo }"
-          @click="showInfo = !showInfo"
+          @click="getInforMe()"
+          v-if="isMe"
         />
 
         <div
-          class="button record-screen  flex-c-m mr-3"
+          class="button record-screen flex-c-m mr-3"
           title="Ghi màn hình"
           @click="handleRecording()"
-          v-if="!isMe && ( peer.id == idRecord  || me.isRecording == false)"
+          v-if="!isMe && (peer.id == idRecord || me.isRecording == false)"
         >
           <div
             class="circle"
             :class="{
-              'stop-record': isRecording
+              'stop-record': isRecording,
             }"
           ></div>
         </div>
@@ -114,8 +115,8 @@
           <div
             v-if="
               videoVisible &&
-                videoProducerId &&
-                videoRtpParameters.encodings.length > 1
+              videoProducerId &&
+              videoRtpParameters.encodings.length > 1
             "
           >
             <p>
@@ -132,7 +133,7 @@
               <span
                 :class="{
                   clickable:
-                    maxSpatialLayer < videoRtpParameters.encodings.length - 1
+                    maxSpatialLayer < videoRtpParameters.encodings.length - 1,
                 }"
                 @click="onClickUpSpatialLayer"
               >
@@ -168,7 +169,7 @@
               <span> </span>
               <span
                 :class="{
-                  clickable: consumerPriority > 1
+                  clickable: consumerPriority > 1,
                 }"
                 @click.stop="onChangeVideoPriority(consumerPriority - 1)"
               >
@@ -177,7 +178,7 @@
               <span> </span>
               <span
                 :class="{
-                  clickable: consumerPriority < 255
+                  clickable: consumerPriority < 255,
                 }"
                 @click.stop="onChangeVideoPriority(consumerPriority + 1)"
               >
@@ -213,9 +214,11 @@
           </div>
         </div>
         <div class="infor-user" style="color: #fff">
-          <h1>Tên: {{ user.name }}</h1>
-          <h1>Lớp: {{ user.class }}</h1>
-          <h1>MSSV: {{ user.ID }}</h1>
+          <template v-if="user != null">
+            <h1 class="mb-1">{{ user.name }}</h1>
+            <h1 class="mb-1">{{ user.email }}</h1>
+          </template>
+          <h1 v-if="user == null">Có lỗi xảy ra</h1>
         </div>
       </div>
 
@@ -230,7 +233,7 @@
             :editProps="{
               maxLength: 20,
               autoCorrect: 'false',
-              spellCheck: 'false'
+              spellCheck: 'false',
             }"
             @change="$emit('onChangeDisplayName', peer.displayName)"
           />
@@ -259,7 +262,7 @@
         'network-error':
           videoVisible &&
           videoMultiLayer &&
-          consumerCurrentSpatialLayer === null
+          consumerCurrentSpatialLayer === null,
       }"
       autoPlay
       muted
@@ -293,6 +296,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import hark from 'hark'
 import peerViewProps from '~/components/PeerView/PeerViewProps'
 import RecordRTC from 'recordrtc'
@@ -313,14 +317,9 @@ export default {
       p_audioTrack: null,
       videoResolutionPeriodicTimer: null,
       faceDetectionRequestAnimationFrame: null,
-      user: {
-        name: 'Nguyễn Tuấn Ngọc',
-        class: 'K62-CC',
-        ID: '17020934'
-      },
-
+      user: null,
       isRecording: this.$store.state.me.isRecording,
-      idRecord: null
+      idRecord: null,
     }
   },
   computed: {
@@ -344,7 +343,7 @@ export default {
         if (a.rid) return a.rid > b.rid ? 1 : -1
         else return a.ssrc > b.ssrc ? 1 : -1
       })
-    }
+    },
   },
   watch: {
     audioMuted() {
@@ -358,10 +357,10 @@ export default {
     },
     videoRtpParameters() {
       this._updateTracks(this.audioTrack, this.videoTrack)
-    }
+    },
   },
   mounted() {
-    this.$nextTick(function() {
+    this.$nextTick(function () {
       this.$refs.videoElem.muted = true
       this.$refs.audioElem.muted = this.isMe || this.audioMuted
 
@@ -369,11 +368,41 @@ export default {
     })
   },
   methods: {
+    getInforMe() {
+      this.showInfo = !this.showInfo
+      if (this.showInfo) {
+        var token = localStorage.getItem('token')
+        if (token !== null && typeof token !== undefined && token !== '') {
+          var reqContent = {
+            method: 'get',
+            url: `${this.$axios.defaults.mainAppURL}/intergrates/users/me`,
+            headers: {
+              Authorization: token,
+              'Content-Type': 'application/json',
+            },
+          }
+          axios(reqContent)
+            .then((result) => {
+              if (result.data && result.data.code == 200 && result.data.data) {
+                this.user = result.data.data
+              } else {
+                this.user = null
+              }
+            })
+            .catch((err) => {
+              this.user = null
+            })
+        } else {
+          this.user = null
+        }
+      }
+    },
+
     handleRecording() {
       this.isRecording = !this.isRecording
 
       this.$store.commit('me/setRecording', {
-        flag: this.isRecording
+        flag: this.isRecording,
       })
 
       if (this.isRecording) {
@@ -388,9 +417,11 @@ export default {
       //   flag: this.peer.id
       // })
 
-      this.idRecord =  this.peer.id;
+      this.idRecord = this.peer.id
 
-      console.log(`1.isRecording: ${this.isRecording} - idRecord: ${this.idRecord} - peerID: ${this.peer.id}`);
+      console.log(
+        `1.isRecording: ${this.isRecording} - idRecord: ${this.idRecord} - peerID: ${this.peer.id}`
+      )
 
       const videoID = `user-${this.peer.id}`
       let playbackElement = document.getElementById(videoID)
@@ -399,7 +430,7 @@ export default {
         mimeType: 'video/mp4',
         audioBitsPerSecond: 128000,
         videoBitsPerSecond: 512000,
-        bitsPerSecond: 512000
+        bitsPerSecond: 512000,
       }
 
       this.recordRTC = RecordRTC(captureStream, options)
@@ -410,8 +441,10 @@ export default {
       // this.$store.commit('me/setRecordingID', {
       //   flag: null
       // })
-      this.idRecord =  -1111;
-      console.log(`2. isRecording: ${this.isRecording} - idRecord: ${this.idRecord} - peerID: ${this.peer.id}`);
+      this.idRecord = -1111
+      console.log(
+        `2. isRecording: ${this.isRecording} - idRecord: ${this.idRecord} - peerID: ${this.peer.id}`
+      )
       var recordedBlob = this.recordRTC.getBlob()
       this.recordRTC.stopRecording((Blob) => {
         this.recordRTC.save('video.mp4')
@@ -628,8 +661,8 @@ export default {
     },
     onChangeVideoPriority(priority) {
       this.$emit('onChangeVideoPriority', priority)
-    }
-  }
+    },
+  },
 }
 </script>
 

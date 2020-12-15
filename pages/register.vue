@@ -6,7 +6,7 @@
           <div class="login-title">Đăng ký tài khoản</div>
           <span v-if="message" class="invalid-msg">{{ message }}</span>
           <validation-observer ref="observer" v-slot="{ invalid }">
-            <form @submit.prevent="login">
+            <form @submit.prevent="register">
               <div class="form-input">
                 <div class="mb-6 mt-6">
                   <validation-provider
@@ -67,7 +67,7 @@
                       v-model="passWord"
                       :error-messages="errors"
                       required
-                      ref="password"
+                      :ref="'password'"
                       @click:append="showP = !showP"
                     ></v-text-field>
                   
@@ -77,7 +77,7 @@
                   <validation-provider
                     v-slot="{ errors }"
                     name="Nhập lại mật khẩu"
-                    rules="required|min:6|confirmed:password"
+                    rules="required|min:6"
                   >
                     <v-text-field
                       :append-icon="showRe ? 'mdi-eye' : 'mdi-eye-off'"
@@ -98,7 +98,7 @@
                   color="primary"
                   type="submit"
                   :disabled="invalid"
-                  :loading="isLogin"
+                  :loading="isRegister"
                 >
                   Đăng ký
                 </v-btn>
@@ -167,35 +167,39 @@ export default {
       fullName: '',
       email: '',
       rePassWord: '',
-      isLogin: false,
+      isRegister: false,
       message: '',
       showP: false,
       showRe: false,
+      groupCode : 'G6'
     }
   },
   methods: {
-    login() {
+    register() {
       this.message = ''
       this.$refs.observer.validate().then((result) => {
         if (result === true) {
           const obj = {
             userName: this.userName,
-            passWord: this.passWord,
+            password: this.passWord,
+            name: this.fullName,
+            groupCode: this.groupCode,
+            email: this.email
           }
 
-          this.isLogin = true
+          this.isRegister = true
           axios
-            .post(`${this.$axios.defaults.baseURL}Intergrates/login`, obj)
-            .then((res) => {
-              if (res.code == 200) {
-                console.log(res.data)
+            .post(`${this.$axios.defaults.baseURL}intergrates/register`, obj)
+            .then((resAuthen) => {
+              if (resAuthen.data && resAuthen.data.code == 200) {
+                this.$router.push('/login')
               }
-              this.isLogin = false
+              this.isRegister = false
             })
             .catch((err) => {
               console.log(err)
-              this.message = 'Đăng nhập thất bại'
-              this.isLogin = false
+              this.message = 'Đăng ký thất bại'
+              this.isRegister = false
             })
         }
       })

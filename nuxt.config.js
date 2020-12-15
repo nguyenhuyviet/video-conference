@@ -116,7 +116,8 @@ export default {
   },
 
   axios: {
-    baseURL:"http://api.toedu.me/api/"
+    baseURL:"https://vidioc.me/api/",
+    mainAppURL:"http://api.toedu.me/api/",
   }
 
 }

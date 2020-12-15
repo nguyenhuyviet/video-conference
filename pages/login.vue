@@ -30,11 +30,14 @@
                     rules="required|min:6"
                   >
                     <v-text-field
+                      :append-icon="showP ? 'mdi-eye' : 'mdi-eye-off'"
+                      :type="showP ? 'text' : 'password'"
                       label="Nhập mật khẩu"
                       :error-messages="errors"
                       hide-details="auto"
                       v-model="passWord"
                       required
+                      @click:append="showP = !showP"
                     ></v-text-field>
                   </validation-provider>
                 </div>
@@ -53,7 +56,8 @@
           </validation-observer>
 
           <div class="bottom">
-            Chưa có tài khoản <router-link class="ml-1" to="/register">Đăng ký</router-link>
+            Chưa có tài khoản
+            <router-link class="ml-1" to="/register">Đăng ký</router-link>
           </div>
         </div>
       </div>
@@ -103,6 +107,7 @@ export default {
       passWord: '',
       isLogin: false,
       message: '',
+      showP: false,
     }
   },
   methods: {
@@ -112,15 +117,27 @@ export default {
         if (result === true) {
           const obj = {
             userName: this.userName,
-            passWord: this.passWord,
+            password: this.passWord,
           }
-
           this.isLogin = true
           axios
-            .post(`${this.$axios.defaults.baseURL}Intergrates/login`, obj)
+            .post(`${this.$axios.defaults.baseURL}intergrates/login`, obj)
             .then((res) => {
-              if (res.code == 200) {
-                console.log(res.data)
+              if (res.data && res.data.code == 200 && res.data.data) {
+                const sid = res.data.sid
+                axios
+                  .get(`https://vidioc.me/api/intergrates/token?sid=${sid}`)
+                  .then((resAuthen) => {
+                    if (resAuthen.data && resAuthen.data.code == 200 && resAuthen.data.data) {
+                       window.localStorage.setItem('token', resAuthen.data.data.token)
+                      this.$router.push('/')
+                    }
+                  })
+                  .catch((err) => {
+                    console.log(err)
+                    this.message = 'Đăng nhập thất bại'
+                    this.isLogin = false
+                  })
               }
               this.isLogin = false
             })
