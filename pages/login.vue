@@ -126,7 +126,7 @@ export default {
               if (res.data && res.data.code == 200 && res.data.data) {
                 const sid = res.data.sid
                 axios
-                  .get(`https://vidioc.me/api/intergrates/token?sid=${sid}`)
+                  .get(`${this.$axios.defaults.baseURL}intergrates/token?sid=${sid}`)
                   .then((resAuthen) => {
                     if (resAuthen.data && resAuthen.data.code == 200 && resAuthen.data.data) {
                        window.localStorage.setItem('token', resAuthen.data.data.token)

@@ -35,7 +35,7 @@ export default {
     if (token !== null && typeof token !== undefined && token !== '') {
       var reqContent = {
         method: 'get',
-        url: `${this.$axios.defaults.mainAppURL}/intergrates/authen`,
+        url: `http://api.toedu.me/api/intergrates/authen`,
         headers: {
           Authorization: token,
           'Content-Type': 'application/json',
