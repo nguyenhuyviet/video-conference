@@ -193,6 +193,9 @@ export default {
             .then((resAuthen) => {
               if (resAuthen.data && resAuthen.data.code == 200) {
                 this.$router.push('/login')
+              }else{
+              
+                this.message = resAuthen.data.message
               }
               this.isRegister = false
             })

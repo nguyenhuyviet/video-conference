@@ -1,7 +1,9 @@
 <template>
   <div class="home-page">
     <nav class="header navbar navbar-expand-lg">
-      <div class="navbar-brand">CVĐHĐCNTT</div>
+      <div style="fontweight: 700; fontfamily: sans-serif" class="navbar-brand">
+        Vidioc
+      </div>
       <button
         class="navbar-toggler"
         type="button"
@@ -11,11 +13,11 @@
         aria-expanded="false"
         aria-label="Toggle navigation"
       >
-        <span class="navbar-toggler-icon"></span>
+        <font-awesome-icon :icon="['fas', 'bars']" />
       </button>
-      <!-- <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav m-auto">
-          <li class="nav-item active">
+          <!-- <li class="nav-item active">
             <div class="nav-link">Home</div>
           </li>
           <li class="nav-item">
@@ -30,10 +32,27 @@
           </li>
           <li class="nav-item">
             <div class="nav-link">Contact Us</div>
-          </li>
+          </li> -->
         </ul>
-        <button class="login-button" @click="test()">LOGIN</button>
-      </div> -->
+        <button class="login-button" @click="login()" v-if="!isLogged">
+          LOGIN
+        </button>
+        <div class="dropdown" v-if="isLogged">
+          <button
+            class="btn-logout"
+            type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          ></button>
+          <div class="dropdown-menu" style="left: -105px" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item d-item" @click="logout()" 
+              >Log out</a
+            >
+          </div>
+        </div>
+      </div>
     </nav>
 
     <div class="container-fluid main-content">
@@ -54,7 +73,7 @@
               v-model="roomId"
               v-on:keyup.enter="joinRoom()"
             />
-            <button class="btn-join" @click="joinRoom()" >
+            <button class="btn-join" @click="joinRoom()">
               <font-awesome-icon :icon="['fa', 'arrow-right']" />
             </button>
             <div class="icon-keyboard">
@@ -91,13 +110,13 @@ import resize from 'vue-resize-directive'
 
 export default {
   name: 'Home',
-   directives: {
-        resize,
-    },
+  directives: {
+    resize,
+  },
   components: {},
   data() {
     return {
-      roomId:"",
+      roomId: '',
       carousel: 2,
       slidePos: 0,
       firstSlide: null,
@@ -110,25 +129,33 @@ export default {
         {
           sortOrder: 1,
           text: 'Tạo cuộc gọi dễ dàng ',
-          imgSource: slide_0
+          imgSource: slide_0,
         },
         {
           sortOrder: 2,
           text: 'Tất cả đều miễn phí',
-          imgSource: slide_1
+          imgSource: slide_1,
         },
         {
           sortOrder: 3,
           text: 'Hình ảnh, âm thanh sắc nét',
-          imgSource: slide_2
-        }
+          imgSource: slide_2,
+        },
       ],
       testshow: true,
-      testshow1: false
+      testshow1: false,
+      isLogged: false,
     }
   },
   props: {},
   beforeMount() {
+    const token = localStorage.getItem('token')
+    if (token) {
+      this.isLogged = true
+    } else {
+      this.isLogged = false
+    }
+
     this.firstSlide = this.slides[this.slidePos]
     this.secondSlide = this.slides[(this.slidePos + 1) % this.slides.length]
     this.slideSelected = this.firstSlide
@@ -136,8 +163,13 @@ export default {
     this.runCarousel()
   },
   methods: {
-    test() {
+    logout() {
+      localStorage.removeItem('token')
+      this.$router.push('/login')
+    },
+    login() {
       this.testshow = !this.testshow
+      this.$router.push('/login')
     },
     runCarousel() {
       if (this.interval) {
@@ -187,9 +219,9 @@ export default {
       }, 2000)
     },
     joinRoom() {
-      this.$router.push({name: 'room',  query: { roomId: this.roomId}})
-    }
-  }
+      this.$router.push({ name: 'room', query: { roomId: this.roomId } })
+    },
+  },
 }
 </script>
 
@@ -203,7 +235,7 @@ export default {
 
   .header {
     position: relative;
-    z-index: 2;
+    z-index: 3;
 
     .left {
       font-size: 20px;
@@ -221,7 +253,7 @@ export default {
       width: 100px;
       border: none;
       border-radius: 4px;
-      background: #9352b3;
+      background: #0b64a4;
       cursor: pointer;
       outline: 0;
       padding: 0 15px;
@@ -569,5 +601,20 @@ button {
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
+}
+
+.btn-logout {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: url('../assets/icons/user.png');
+  background-size: 100px 100px;
+  background-position: -30px -31px;
+}
+.d-item {
+  cursor: pointer;
+  // &:hover{
+  //   background: #005abd;
+  // }
 }
 </style>

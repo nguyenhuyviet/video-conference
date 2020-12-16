@@ -377,7 +377,7 @@ export default {
             method: 'get',
             url: `http://api.toedu.me/api/intergrates/users/me`,
             headers: {
-              Authorization: token,
+              Authorization: "Bearer " + token,
               'Content-Type': 'application/json',
             },
           }

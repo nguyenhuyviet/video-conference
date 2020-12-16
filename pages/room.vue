@@ -31,13 +31,14 @@ export default {
     }
   },
   beforeMount() {
+    let roomId = this.$route.query.roomId
     var token = localStorage.getItem('token')
     if (token !== null && typeof token !== undefined && token !== '') {
       var reqContent = {
         method: 'get',
-        url: `http://api.toedu.me/api/intergrates/authen`,
+        url: `${this.$axios.defaults.baseURL}intergrates/authen`,
         headers: {
-          Authorization: token,
+          Authorization: "Bearer " + token,
           'Content-Type': 'application/json',
         },
       }
@@ -46,15 +47,15 @@ export default {
           if (result.status == 200) {
           
           } else {
-            this.$router.push('/login')
+            this.$router.push({name: 'login',  query: { roomId: roomId}})
           }
         })
         .catch((err) => {
           console.log(err)
-          this.$router.push('/login')
+          this.$router.push({name: 'login',  query: { roomId: roomId}})
         })
     } else {
-      this.$router.push('/login')
+      this.$router.push({name: 'login',  query: { roomId: roomId}})
     }
   },
   methods: {

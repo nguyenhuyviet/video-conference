@@ -7,10 +7,10 @@ const resolve = require('path').resolve
 export default {
   mode: 'spa',
   server: {
-    https: {
-      key: fs.readFileSync(path.resolve(__dirname, 'server.key')),
-      cert: fs.readFileSync(path.resolve(__dirname, 'server.crt'))
-    }
+    // https: {
+    //   key: fs.readFileSync(path.resolve(__dirname, 'server.key')),
+    //   cert: fs.readFileSync(path.resolve(__dirname, 'server.crt'))
+    // }
   },
   /*
    ** Headers of the page
@@ -116,7 +116,7 @@ export default {
   },
 
   axios: {
-    baseURL: "https://vidioc.me/api/"
+    baseURL: "http://api.toedu.me/api/"
     
   }
 

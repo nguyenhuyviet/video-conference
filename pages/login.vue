@@ -110,9 +110,37 @@ export default {
       showP: false,
     }
   },
+  beforeMount() {
+    var token = localStorage.getItem('token')
+    if (token !== null && typeof token !== undefined && token !== '') {
+      var reqContent = {
+        method: 'get',
+        url: `${this.$axios.defaults.baseURL}intergrates/authen`,
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json',
+        },
+      }
+      axios(reqContent)
+        .then((result) => {
+          if (result.status == 200) {
+            this.$router.push('/')
+          } else {
+            this.$router.push({ name: 'login' })
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+          this.$router.push({ name: 'login' })
+        })
+    } else {
+      this.$router.push({ name: 'login' })
+    }
+  },
   methods: {
     login() {
       this.message = ''
+      let roomId = this.$route.query.roomId
       this.$refs.observer.validate().then((result) => {
         if (result === true) {
           const obj = {
@@ -124,13 +152,30 @@ export default {
             .post(`${this.$axios.defaults.baseURL}intergrates/login`, obj)
             .then((res) => {
               if (res.data && res.data.code == 200 && res.data.data) {
-                const sid = res.data.sid
+                console.log(res.data.data.sid)
+                const sid = res.data.data.sid
                 axios
-                  .get(`${this.$axios.defaults.baseURL}intergrates/token?sid=${sid}`)
+                  .get(
+                    `${this.$axios.defaults.baseURL}intergrates/token?sid=${sid}`
+                  )
                   .then((resAuthen) => {
-                    if (resAuthen.data && resAuthen.data.code == 200 && resAuthen.data.data) {
-                       window.localStorage.setItem('token', resAuthen.data.data.token)
-                      this.$router.push('/')
+                    if (
+                      resAuthen.data &&
+                      resAuthen.data.code == 200 &&
+                      resAuthen.data.data
+                    ) {
+                      window.localStorage.setItem(
+                        'token',
+                        resAuthen.data.data.token
+                      )
+                      if (roomId) {
+                        this.$router.push({
+                          name: 'room',
+                          query: { roomId: roomId },
+                        })
+                      } else {
+                        this.$router.push('/')
+                      }
                     }
                   })
                   .catch((err) => {
